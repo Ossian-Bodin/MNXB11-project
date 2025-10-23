@@ -2,6 +2,7 @@
 
 // #include "Analysis.h"
 #include "DataExtraction.h"
+#include "meanTemp.h"
 
 #include <iostream>
 #include <string>
@@ -115,6 +116,7 @@ int main(int argc, char *argv[]) {
       std::exit(2);
   }
 
+  tempReader("results/output.root");
 
   return 0;
 }

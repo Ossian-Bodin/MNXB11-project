@@ -5,7 +5,7 @@
 class Measurement { //class object Measurement declaration
  public:
   Measurement(int _year, int _month, int _day, int _hour, int _minute, int _second,
-              double _temperature, std::string _quality) {}
+              double _temperature, std::string _quality);
 
   //Get functions
   int getYear() const;

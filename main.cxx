@@ -1,14 +1,20 @@
 #include <argumentum/argparse.h>
 
-#include "Analysis.h"
+// #include "Analysis.h"
 #include "DataExtraction.h"
 
 #include <iostream>
 #include <string>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
+// g++ -Iinclude -Iexternal/include -Lexternal/lib64 main.cxx src/DataExtraction.cxx src/Measurement.cxx -largumentum $(root-config --cflags --libs) -o main
+
 int main(int argc, char *argv[]) {
   
   // Create the parser object
-  auto parser = argumentum::argumentum_parser{};
+  auto parser = argumentum::argument_parser{};
 
   // Initialize the name and a description for the program
   const std::string program_name{argv[0]};
@@ -50,17 +56,25 @@ int main(int argc, char *argv[]) {
       " 4 -> Run analysis 4 () , 5 -> Run analysis 5 (),"
       "6 -> Run all five analyses");
 
-  std::string output_file{"results/output.root"};
+  std::string output_file{};
   auto output_file_parameter{
     parameters.add_parameter(output_file, "-o", "--output")};
-  analysis_choice_parameter.nargs(1);
-  analysis_choice_parameter.help("Specify the output directory and output file name.")
+  output_file_parameter.nargs(1);
+  output_file_parameter.default_value("results/output.root");
+  output_file_parameter.help("Specify the output directory and output file name.");
 
   bool successful_parse{parser.parse_args(argc, argv)};
 
   if (!successful_parse) {
     std::cout << "Something went wrong with the argument parsing" << std::endl;
     std::exit(1);
+  }
+
+  std::string output_directory{fs::path(output_file).parent_path()};
+
+  if (!fs::is_directory(output_directory) || !fs::exists(output_directory)) {
+    std::cout << "Creating output directory..." << std::endl;
+    fs::create_directories(output_directory);
   }
 
   std::cout << "Running data extraction!" << std::endl;

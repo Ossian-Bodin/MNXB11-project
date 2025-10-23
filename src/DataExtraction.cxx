@@ -12,7 +12,7 @@ std::vector<Measurement> read_measurements(const std::string& filename){ //const
     int second;
     double temp;
     std::string quality;
-    char dash;  
+    char dash;
     char colon;
 
 
@@ -45,7 +45,7 @@ void persist_measurements(const std::vector<Measurement>& measurements, const st
     tree.Branch("temp", &temp);
     tree.Branch("quality", &quality);
 
-    for (const auto measurement : measurements){
+    for (const auto &measurement : measurements){
         year = measurement.getYear();
         month = measurement.getMonth();
         day = measurement.getDay();

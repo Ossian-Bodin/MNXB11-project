@@ -9,8 +9,6 @@
 
 namespace fs = std::filesystem;
 
-// g++ -Iinclude -Iexternal/include -Lexternal/lib64 main.cxx src/DataExtraction.cxx src/Measurement.cxx -largumentum $(root-config --cflags --libs) -o main
-
 int main(int argc, char *argv[]) {
   
   // Create the parser object

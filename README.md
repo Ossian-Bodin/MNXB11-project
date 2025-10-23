@@ -1,14 +1,12 @@
-# MNXB11-project-template
+# MNXB11-project
 # About
-This folder contains a skeleton for your project that you can use as
-inspiration. Once you get started, do feel free to go ahead and replace this
-README file with one representing your project.
+This is the repository for team 9's MNXB11 project.
 
 # Directory structure
 
 The base directory here contains your "main" file, i.e. the C++ file that you
 will be using as your starting point in your project. The code in this file should ideally be short and just make use of the functionality that you've
-prepared in your other translation units. The majority of your code should be placed in  the two folders where you define your translation units, `src/` and `include/`. 
+prepared in your other translation units. The majority of your code should be placed in  the two folders where you define your translation units, `src/` and `include/`.
 
 Do remember to add your include guards to your header files, otherwise the compiler will
 get multiple definitions if you end up loading two source files that include the
@@ -39,8 +37,7 @@ We have also included three special files in the base of the repository
 
 The [datasets](datasets) folder contains open data from SMHI and a README.md with further information about it.
 
-
-We have included a basic Makefile here which should be familiar to you. It follows the same project structure that we have been using in the course. When you add a new translation unit to the project, you have update the dependencies in the Makefile. 
+The `Makefile` can be used to compile the source files. If you create a new source file that will be used in `main.cxx` you will need to add it as a dependency of the `main` target.
 
 By default, the `all` target will be run which 
 - Compiles any `.cxx` files in the `src/` directory into object files 
@@ -48,27 +45,21 @@ By default, the `all` target will be run which
 
 You can run the `clean` target to remove any object files that have been produced as well as the `main` executable.
 
-## Adding external software libraries
+## Building external libraries
 
-If you want to make use of external software libraries with your project, you
-will always have to tell the tool that builds your project. The Makefile included in this template will pick up any header files in the external/include directory and look for libraries in external/lib and external/lib64 so if you use external as your installation directory, you only need to add the corresponding `-l` flag to the linker.
+### Argumentum
 
-Here's an illustration of the typical process to add a (CMake based) external library
+The `main.cxx` file makes use of the CLI parsing library `argumentum`. Follow these instructions to build the library. The following commands should be run from starting from the root directory.
 ``` sh
-# Clone or download the library you want to use 
-git clone https://somerepository.com/alibrary alibrary # The last argument determines what the directory will be called
+# Clone the library 
+git clone https://github.com/mmahnic/argumentum # if not specified this automatically puts it into a directory called argumentum
 
-mkdir build/alibrary -pv # -p will tell mkdir to create the build/ directory if it doesn't already exist 
-# Go into the build directory
-cd build/alibrary 
-# Look up the documentation for the library to find out if there are any additional flags you need for CMake 
+mkdir build/argumentum -pv # -p tells mkdir to create the build/ directory if it does not already exist 
+# Enter the build directory
+cd build/argumentum
 
-# This command tells CMake to configure the build directory based on the source code in the ../../alibrary folder and to install the resulting headers and library files into ../../external
-cmake ../../alibrary -DCMAKE_INSTALL_PREFIX=../../external 
-# Build and install! Use -jN to launch N jobs
-make -j8 install # If you are on an 8-core machine
+# Configure the build directory with CMake to install files in the external directory
+cmake ../../argumentum -DCMAKE_INSTALL_PREFIX=../../external
+# Build and install (use -jN to specify that you want to run it on N cores)
+make -j4 install # To use four cores
 ```
-
-Make sure to document how to do this for any library you choose to use!
-
-Have fun!

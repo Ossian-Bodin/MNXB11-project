@@ -15,22 +15,23 @@ void tempReader(const std::string& filename){
     TTreeReaderValue<int> day{reader, "day"};
     TTreeReaderValue<double> temp{reader, "temp"};
     
-    /*int minyear = *year;
-    while(reader.Next()){}
-    int maxyear = *year;
-    int bins = maxyear - minyear + 1;
-    auto averageTempHist = new TH1D("averageTempHist", "Average Yearly Temperature", bins, minyear, maxyear);
-    reader.Restart();
-    */
-    auto averageTempHist = new TH1D("averageTempHist", "Average Yearly Temperature", 2023-1780+1, 1780, 2023);
-    int i{0};
+    int minyear{1780};
+    int maxyear{2023};
+    int bins{maxyear - minyear + 1};
+    auto averageTempHist = new TH1D("averageTempHist", "Average Yearly Temperature", bins, minyear, maxyear+1);
+    
+    
+    reader.Next(); //Need this for initial value
+    int currentyear{*year};
     double FetchedTemp{0.0};
+     int i{0};
     while (reader.Next()){
-            if (i == 365){
+            if (*year != currentyear){
                 FetchedTemp = FetchedTemp/i;
                 averageTempHist->Fill(*year, FetchedTemp);
                 i = 0;
                 FetchedTemp = 0.0;
+                currentyear = *year;
                 
             }
             else{
@@ -44,6 +45,7 @@ void tempReader(const std::string& filename){
 	averageTempHist->GetXaxis()->SetTitle("Year");
     averageTempHist->GetXaxis()->SetTitleOffset(1.2);
     averageTempHist->GetYaxis()->SetTitleOffset(1.1);
+    averageTempHist->SetAxisRange(-5,30,"Y");
     TFile *outputFile = new TFile("results/meanTemperature.root", "RECREATE");
     outputFile->cd();
     averageTempHist->Write();

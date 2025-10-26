@@ -5,26 +5,39 @@
 
 # Template: 
 
-YYYY-MM-DD Name LastName  <email@somewhere>
+2025-10-22 Emma Krvaric  <emma.krvaric.1546@student.lu.se>
 
-	High Level description of work done
+	Met with group and determined my own personal workplan.
 
-	* Fine grained description of important things that you want to communicate
-	* Fine grained description of important things that you want to communicate
+	* Approved workplan.md stating that I would be responsible for Analysis 2
+	* Created my own notes to determine my own workflow
 
+2025-10-23 Emma Krvaric <emma.krvaric.1546@student.lu.se>
 
-# Example (entries from newest to oldest):
+	Group meeting #2, actually started work on Analysis 2.
 
-2025-09-26 Florido Paganelli  <florido.paganelli@fysik.lu.se>
+	* Chose the data I wanted to analyze (Uppsala)
+	* Cleaned the data using Ossian and Hugo's code
 
-	Reviewing content of project template
+2025-10-24 Emma Krvaric <emma.krvaric.1546@student.lu.se>
 
-	* Added ChangeLog.txt with comments and examples
+	Created first rough draft of Analysis2.cxx and Analysis2.h
 
-2025-09-25 Florido Paganelli  <florido.paganelli@fysik.lu.se>
+	* Created both files and drafted out my steps in comments
+	* Completed header file, source is still a work in progress.
 
-	Reviewing content of project template
+2025-10-25 Emma Krvaric <emma.krvaric.1546@student.lu.se>
 
-	* Checking directory structure
-	* Added Workplan.md
+	Finished Analysis2.cxx partially
 
+	* Most important part was getting everything on the page first.
+	* Editing will come later (though I spent several hours on this so far)
+
+2025-10-26 Emma Krvaric <emma.krvaric.1546@student.lu.se>
+
+	Did a final look-over Analysis2.cxx
+
+	* Hopefully finished everything (not including main.cxx or my latex report)
+	* Compiled it to test if it works ()
+	* Altered visual aesthetics of histogram to personalize it and improve legibility
+	* realized i used absolute paths by mistake for testing, altered it to pass through main.cxx

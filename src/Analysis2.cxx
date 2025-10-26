@@ -2,7 +2,7 @@
 #include "../include/Measurement.h"
 #include "../include/DataExtraction.h"
 
-//all T includes
+//all root includes
 #include <TH1.h> //histogram
 #include <TCanvas.h> //canvas
 #include <TFile.h> //to output file ROOT
@@ -13,6 +13,7 @@
 #include <numeric>
 #include <iostream>
 #include <string>
+#include <filesystem>
 
 //emma: (analysis 2) - average daily temperature from 2005 to 2023
 //on my birthday feb 1 to most recent birthday data
@@ -24,10 +25,11 @@ and i want it to be my favorite color purple
 and it should output a ROOT file with TH1F histogram
 i want to force error bars like in Figure 2 of example instructions*/
 
+//-------------------------------------------------------------------------------------------
 //make year_month_day into values 1-365 for my histogram (like figure 2)
 //requires numerical value of every day in each month, so 31 is january, 59 is february, etc
 //and im too lazy to count that so i asked chat gpt to count the days :p 
-
+//-------------------------------------------------------------------------------------------
 int day_of_year(int year, int month, int day) {
     static const int days_before_month[] = 
         {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
@@ -45,7 +47,7 @@ int day_of_year(int year, int month, int day) {
 //-----------------------------------------------------------------------------------------
 //THIS IS MY ACTUAL FUNCTION THAT INCLUDES EVERYTHING NEEDED TO RUN MY PART OF THE PROJECT!
 //-----------------------------------------------------------------------------------------
-void run_analysis2(const std::vector<Measurement>& measurements, const std::string& output_filename){
+void analysis2(const std::vector<Measurement>& measurements, const std::string& output_filename){
     
     std::vector<Measurement> data;
 
@@ -69,7 +71,7 @@ for (const auto& m : data){
     dailyTemps[dayIndex].push_back(m.getTemperature());}
 
 //2) make my histogram (one bin = one day)
-const int nDays = 365;
+const int nDays = 366; //has to be 366 because of leap years
 TH1F* AvgTemp = new TH1F("AvgTemp", "Mean Daily Temperature (February 1 2005 - February 1 2023);Day of Year;Temperature [C]", nDays, 0.5, nDays + 0.5);
 
 //3) get mean temperature and get standard deviation for every day 
@@ -84,8 +86,8 @@ for (int day = 1; day <= nDays; ++day){
         double mean = sum / temps.size(); //average
         
         double sq_sum = 0.0;
-        for (double t : temps) sq_sum += t * t;
-        double standarddeviation = std::sqrt(sq_sum / temps.size() - mean * mean);
+        for (double t : temps) sq_sum += (t - mean) * (t - mean);
+        double standarddeviation = std::sqrt(sq_sum / temps.size());
 
         //use figure 2 hint in project instructions for error?
         AvgTemp->SetBinContent(day, mean);
@@ -93,21 +95,56 @@ for (int day = 1; day <= nDays; ++day){
     }
 
 //4) make my histogram MINE and also cool
+//optional changes
 gStyle->SetOptStat(0);
 AvgTemp->SetLineColor(kViolet + 1);
-AvgTemp->SetFillColorAlpha(kViolet - 4, 0.4);
 AvgTemp->SetLineWidth(2);
+AvgTemp->GetXaxis()->CenterTitle(true);
+AvgTemp->GetXaxis()->SetTitleSize(0.05);
+AvgTemp->GetXaxis()->SetLabelSize(0.05);
+AvgTemp->GetYaxis()->CenterTitle(true);
+AvgTemp->GetYaxis()->SetTitleSize(0.05);
+AvgTemp->GetYaxis()->SetLabelSize(0.05);
+//readability and legibility
 AvgTemp->GetYaxis()->SetRangeUser(-15,30); //temperature -15 to 30
-AvgTemp->GetXaxis()->SetNdivisions(365 / 50); //50 day tick marks because figure 2
+AvgTemp->GetXaxis()->SetNdivisions(12, kTRUE); //12 major ticks for each month
+//give month names while keeping day of year functionality 
+//do middle of the month instead of beginning of the month
+AvgTemp->GetXaxis()->SetBinLabel(15, "Jan");
+AvgTemp->GetXaxis()->SetBinLabel(46, "Feb");
+AvgTemp->GetXaxis()->SetBinLabel(74, "Mar");
+AvgTemp->GetXaxis()->SetBinLabel(105, "Apr");
+AvgTemp->GetXaxis()->SetBinLabel(135, "May");
+AvgTemp->GetXaxis()->SetBinLabel(166, "Jun");
+AvgTemp->GetXaxis()->SetBinLabel(196, "Jul");
+AvgTemp->GetXaxis()->SetBinLabel(227, "Aug");
+AvgTemp->GetXaxis()->SetBinLabel(258, "Sep");
+AvgTemp->GetXaxis()->SetBinLabel(288, "Oct");
+AvgTemp->GetXaxis()->SetBinLabel(319, "Nov");
+AvgTemp->GetXaxis()->SetBinLabel(349, "Dec");
+AvgTemp->GetXaxis()->LabelsOption("h");
 
 //5) draw the histogram and then save it?
 TCanvas* c1 = new TCanvas("c1", "Mean Daily Temperature", 1000, 600);
-AvgTemp->Draw("E1 HIST");
-c1->SaveAs("results/Analysis2_histogram.png"); //save for latex use
+AvgTemp->Draw("HIST"); //make line first
+AvgTemp->SetLineColorAlpha(kViolet - 2, 0.5);//slightly transparent to improve readability
+AvgTemp->Draw("E SAME"); //make error bars
+c1->Update();
+//c1->SaveAs("results/Analysis2_histogram.png"); //save for latex use
+
+// Determine output directory
+std::filesystem::path outPath(output_filename);
+std::filesystem::path outDir = outPath.parent_path();
+if (outDir.empty()) outDir = ".";
+if (!std::filesystem::exists(outDir)) std::filesystem::create_directories(outDir);
+
+// PNG path for latex?
+std::filesystem::path png_file = outDir / "Analysis2_Histogram.png";
+c1->SaveAs(png_file.c_str());
 
 TFile outFile(output_filename.c_str(), "RECREATE");
 AvgTemp->Write();
 outFile.Close();
 
-std::cout << "Saved Histogram for Analysis 2" << '\n';
+std::cout << "Saved Histogram for Analysis 2 as png and ROOT file" << '\n';
 }

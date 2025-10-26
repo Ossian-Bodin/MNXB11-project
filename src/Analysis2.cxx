@@ -24,11 +24,6 @@ and i want it to be my favorite color purple
 and it should output a ROOT file with TH1F histogram
 i want to force error bars like in Figure 2 of example instructions*/
 
-//day data for histogram stuff:
-struct Dayta {
-    std::vector<double> temps;
-};
-
 //make year_month_day into values 1-365 for my histogram (like figure 2)
 //requires numerical value of every day in each month, so 31 is january, 59 is february, etc
 //and im too lazy to count that so i asked chat gpt to count the days :p 
@@ -41,12 +36,9 @@ int day_of_year(int year, int month, int day) {
         //leap years include 2008, 2012, 2016, 2020
     int dayofyear = days_before_month[month - 1] + day;
 
-    //full disclosure i needed assistance for the bool to calculate a leap year so i asked chat for that
+    //full disclosure i needed assistance for the bool to calculate a leap year so i asked chat for an outline
     bool is_leap = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
-    if (is_leap && month > 2){
-        ++dayofyear;
-    }
-
+    if (is_leap && month > 2) ++dayofyear;
     return dayofyear;
 }
 

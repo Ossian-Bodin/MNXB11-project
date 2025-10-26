@@ -54,19 +54,25 @@ int main(int argc, char *argv[]) {
       " 2 -> Run analysis 2 () -> Run analysis 3 (),"
       " 4 -> Run analysis 4 () , 5 -> Run analysis 5 (),"
       "6 -> Run all five analyses");
-
+  
+  // Create a third parameter that lets the user specify the output file (not required)
   std::string output_file{};
   auto output_file_parameter{
     parameters.add_parameter(output_file, "-o", "--output")};
   output_file_parameter.nargs(1);
   output_file_parameter.default_value("results/output.root");
-  output_file_parameter.help("Specify the output directory and output file name.");
+  output_file_parameter.help("Specify the output directory and output file name (not required).");
 
   bool successful_parse{parser.parse_args(argc, argv)};
 
   if (!successful_parse) {
     std::cout << "Something went wrong with the argument parsing" << std::endl;
     std::exit(1);
+  }
+
+  // Check if input_file is a cleaned data file, if not replace it with the clean file
+  if (input_file.find("baredata_") == std::string::npos) {
+    input_file = clean_data(input_file);
   }
 
   std::string output_directory{fs::path(output_file).parent_path()};

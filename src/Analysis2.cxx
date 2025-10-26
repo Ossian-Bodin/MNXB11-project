@@ -107,7 +107,7 @@ AvgTemp->GetYaxis()->SetTitleSize(0.05);
 AvgTemp->GetYaxis()->SetLabelSize(0.05);
 //readability and legibility
 AvgTemp->GetYaxis()->SetRangeUser(-15,30); //temperature -15 to 30
-AvgTemp->GetXaxis()->SetNdivisions(12, kFALSE); //12 major ticks for each month
+AvgTemp->GetXaxis()->SetNdivisions(12, 5, kFALSE); //12 major ticks for each month and 5 in between?
 //give month names while keeping day of year functionality 
 //do middle of the month instead of beginning of the month
 AvgTemp->GetXaxis()->SetBinLabel(15, "Jan");

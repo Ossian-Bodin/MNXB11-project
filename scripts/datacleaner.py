@@ -33,13 +33,10 @@ def main(filename: str):
           out_file.write(f"{date} {time} {temp} {quality}\n")
 
       print(f"Cleanup was successful. Result can be found in {os.path.relpath(out_file.name)}.")
-
+      sys.exit(0)
   except:
       print("Input file could not be read, exiting...")
       sys.exit(1)
-
-
-  return None
 
 if __name__=="__main__":
   argv = sys.argv

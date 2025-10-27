@@ -7,6 +7,8 @@
 #include <string>
 #include <filesystem>
 
+#include "Ice_cream_analysis.h"
+
 namespace fs = std::filesystem;
 
 int main(int argc, char *argv[]) {
@@ -105,10 +107,23 @@ int main(int argc, char *argv[]) {
       std::cout << "Running a fourth analysis" << std::endl;
       // some_other_analysis(measurements, output_file);
       break;
-    case 5:
-      std::cout << "Running a third analysis" << std::endl;
-      // some_other_analysis(measurements, output_file);
+    
+    case 5: // testing Ice_cream
+      {
+        std::cout << "Testing Ice Cream CSV reader..." << std::endl;
+
+        IceCreamData iceCream = readIceCreamCSV(); 
+
+        std::cout << "Loaded " << iceCream.dates.size() << " entries.\n";
+        for (size_t i = 0; i < std::min<size_t>(iceCream.dates.size(), 5); ++i) {
+            std::cout << iceCream.dates[i] << " -> " << iceCream.sales[i] << "\n";
+        }
+
+        
+      }
+
       break;
+
     case 6:
       std::cout << "Running all analyzes!" << std::endl;
       // some_analysis(measurements, output_file);
@@ -120,6 +135,9 @@ int main(int argc, char *argv[]) {
                 << std::endl;
       std::exit(2);
   }
+
+
+
 
 
   return 0;

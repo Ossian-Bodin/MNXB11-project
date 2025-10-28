@@ -108,18 +108,35 @@ int main(int argc, char *argv[]) {
       // some_other_analysis(measurements, output_file);
       break;
     
+    
     case 5: // testing Ice_cream
       {
         std::cout << "Testing Ice Cream CSV reader..." << std::endl;
 
-        IceCreamData iceCream = readIceCreamCSV(); 
+        IceCreamData iceCream = readIceCreamCSV(); // instance of readCSV -> std::vec dates = iceCream.dates
 
         std::cout << "Loaded " << iceCream.dates.size() << " entries.\n";
         for (size_t i = 0; i < std::min<size_t>(iceCream.dates.size(), 5); ++i) {
             std::cout << iceCream.dates[i] << " -> " << iceCream.sales[i] << "\n";
         }
 
-        
+        std::cout << "testing computeMonthlyTemp()..." << std::endl;
+
+
+        TemperatureData falsterbo = computeMonthlyTemp("datasets/baredata_smhi-opendata_1_52230_20231007_155448_Falsterbo.csv", 1970, 2020);
+         
+
+        std::cout << "Got " << falsterbo.avgTemps.size() << " month entries" << std::endl;
+        std::cout << falsterbo.months.size() << std::endl;
+
+        for (int i = 0; i<5; ++i)
+        {
+          std::cout << falsterbo.years[i] << "-" << falsterbo.months[i] << " avg = " << falsterbo.avgTemps[i] << std::endl;
+        }
+
+
+
+
       }
 
       break;

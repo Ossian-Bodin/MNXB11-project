@@ -68,8 +68,8 @@ TemperatureData computeMonthlyTemp(const std::string& filename, int startyear, i
     // for each key (month, year) associate a vector containing all (hourly) temperature readings that (month, year)
     std::map<std::pair<int,int>, std::vector<double>> tempMonthBox; // to be averaged
 
-    //test the map here:
-
+    
+    
 
 
     std::string line;
@@ -81,10 +81,10 @@ TemperatureData computeMonthlyTemp(const std::string& filename, int startyear, i
         
         std::stringstream ss(line);     
         double temp;
-        std::string date;
+        std::string date, time;
         std::string quality;
 
-        ss >> date >> temp >> quality;  // parsing the line structure yyyy-mm-dd hh:mm:ss temp quality (ignoring time of day)
+        ss >> date >> time >> temp >> quality;  // parsing the line structure yyyy-mm-dd hh:mm:ss temp quality (ignoring time of day)
 
 
         int year = std::stoi(date.substr(0, 4));    // substr(start char, len)
@@ -97,6 +97,27 @@ TemperatureData computeMonthlyTemp(const std::string& filename, int startyear, i
         
         tempMonthBox[{year, month}].push_back(temp); // collect monthly temperature readings in the keyed boxes
     }
+
+    // testing the map
+    {
+
+        int testYear = 1970;
+        int testMonth = 1; 
+
+        auto key = std::make_pair(testYear, testMonth);
+        auto it = tempMonthBox.find(key);
+
+        std::cout << "Found " << it->second.size()
+                << " temperature readings for "
+                << testYear << "-" << testMonth << ":\n";
+
+        for (double t : it->second) 
+        {
+            std::cout << t << "\n";
+        }
+        std::cout << std::endl;
+        std::cout << "end of test" << std::endl;
+    }  
 
 
     for (int year = startyear; year <= stopyear; ++year)

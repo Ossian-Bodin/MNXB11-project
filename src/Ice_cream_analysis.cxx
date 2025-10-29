@@ -9,6 +9,7 @@
 #include "TCanvas.h"
 #include "TGraph.h"
 #include "TLegend.h"
+#include "TLine.h"
 
 #include "Ice_cream_analysis.h"
 
@@ -192,13 +193,14 @@ void plotTempVsSales(const std::string& tempFileName, int startyear, int stopyea
     }
 
 
+    // trim the temp data set to have same number of elements as sales (sales data set is fixed, i.e. we want to use all its data)
+    if (temp.avgTemps.size() > iceCream.sales.size()) {
+        temp.avgTemps.resize(iceCream.sales.size());
+    }
 
-    if (temp.avgTemps.size() != iceCream.sales.size())
-    {
-        std::cerr << "Error: size mismatch.\n" 
-        << "Temperature months: " << temp.avgTemps.size() << "\n"
-        << "Sales months: " << iceCream.sales.size() << "\n";
-
+    if (temp.avgTemps.size() != iceCream.sales.size()) {
+        std::cerr << "ERROR: Still mismatched after trimming!\n";
+        return;
     }
     
     int nBins = temp.avgTemps.size();
@@ -210,7 +212,7 @@ void plotTempVsSales(const std::string& tempFileName, int startyear, int stopyea
     for (int i = 0; i < nBins; ++i)
     {
         tempHist->SetBinContent(i + 1, temp.avgTemps[i]);
-        salesHist->SetBinContent(i + 1, 0.2*iceCream.sales[i]); // may need offset bc sales[i] >> temp[i]
+        salesHist->SetBinContent(i + 1, 0.1*iceCream.sales[i]); // may need offset bc sales[i] >> temp[i]
     }
 
     auto canv = new TCanvas("canv", "Monthly Temperature VS Ice cream sales", 1200, 600);
@@ -223,6 +225,16 @@ void plotTempVsSales(const std::string& tempFileName, int startyear, int stopyea
     salesHist->SetFillColorAlpha(kRed - 3, 0.4);
     salesHist->Draw("HIST SAME");
 
+
+    // Now safely get X range from visible bin edges:
+    double xmin = tempHist->GetXaxis()->GetBinLowEdge(1);
+    double xmax = tempHist->GetXaxis()->GetBinUpEdge(tempHist->GetNbinsX());
+
+    // THIS is the correct zero-line:
+    TLine* line = new TLine(xmin, 0, xmax, 0);
+    line->SetLineColor(kBlack);
+    line->SetLineWidth(2);
+    line->Draw("SAME");  // IMPORTANT: use SAME
 
     canv->SaveAs("results/temp_vs_sales_test.png");
     canv->SaveAs("results/temp_vs_sales_test.root");

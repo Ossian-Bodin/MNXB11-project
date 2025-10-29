@@ -1,6 +1,6 @@
 #include <argumentum/argparse.h>
 
-// #include "Analysis.h"
+#include "analysis3.h"
 #include "DataExtraction.h"
 
 #include <iostream>
@@ -93,7 +93,8 @@ int main(int argc, char *argv[]) {
       break;
     case 3:
       std::cout << "Running a third analysis" << std::endl;
-      // some_other_analysis(measurements, output_file);
+      analysis3(output_file);
+      
       break;
     case 4:
       std::cout << "Running a fourth analysis" << std::endl;

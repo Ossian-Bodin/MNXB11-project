@@ -11,7 +11,11 @@ std::string clean_data(std::string &raw_file) {
     if (!fs::exists(clean_file)) {
         std::string command{"./scripts/datacleaner.py "};
         command += raw_file;
-        system(command.c_str());
+        int exitcode = system(command.c_str());
+        if (exitcode != 0) {
+            std::cerr << "Data cleaning script failed with exit code " << exitcode << std::endl;
+            std::exit(exitcode);
+        }
     }
     // Return path of clean file
     return clean_file;

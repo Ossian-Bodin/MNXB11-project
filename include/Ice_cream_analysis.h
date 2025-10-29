@@ -16,18 +16,17 @@
 #include "DataExtraction.h"
 
 
-// ice cream data set
+// struct for handling ice cream data
 struct IceCreamData
 {
     std::vector<std::string> dates;
     std::vector<double> sales;
 };
 
-
 IceCreamData readIceCreamCSV(); // function defined on struct IceCreamData
 
 
-// SMHI data set
+// struct for handling SMHI data
 struct TemperatureData
 {
     std::vector<int> years;
@@ -36,10 +35,12 @@ struct TemperatureData
 };
 
 TemperatureData computeMonthlyTemp(const std::string& filename, int startyear, int stopyear);
-//void plotHist(const std::string& filename);
 
 
-// draw Histogram function
+// Plotting functions
+void plotTemperatureOnly(const std::string& filename, int startyear, int stopyear);
+void plotTempVsSales(const std::string& tempFileName, int startyear, int stopyear);
+
 
 
 

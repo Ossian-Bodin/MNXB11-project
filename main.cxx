@@ -127,15 +127,20 @@ int main(int argc, char *argv[]) {
          
 
         std::cout << "Got " << falsterbo.avgTemps.size() << " month entries" << std::endl;
-        std::cout << falsterbo.months.size() << std::endl;
+        std::cout << falsterbo.months.size() << std::endl; // should (hopefully) be the same number
 
+
+        // testing tempMonthBox struct and computeAvg by printing:
         for (int i = 0; i<5; ++i)
         {
           std::cout << falsterbo.years[i] << "-" << falsterbo.months[i] << " avg = " << falsterbo.avgTemps[i] << std::endl;
         }
 
 
-
+        // testing plotTemperatureOnly
+        plotTemperatureOnly("datasets/baredata_smhi-opendata_1_52230_20231007_155448_Falsterbo.csv", 1972, 2000);
+        // testing plotTempVSsales
+        plotTempVsSales("datasets/baredata_smhi-opendata_1_52230_20231007_155448_Falsterbo.csv", 1972, 2020);
 
       }
 

@@ -29,7 +29,7 @@ void tempReader(const std::string& filename) {
   int i{0};
   while (reader.Next()) {  //Check through all entries in TTree
     if (*year == 1958 || *year == 1959 || *year == 1960) {
-      averageTempHist->SetBinContent(*year - minyear + 1, 0); // Mark faulty years with 0
+      averageTempHist->SetBinContent(*year - minyear + 1, 0); // Mark missing years with 0
       reader.Next(); // Skip years with faulty data
       break;
     }

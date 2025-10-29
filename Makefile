@@ -11,11 +11,11 @@ LDFLAGS := $(ROOTFLAGS) $(ARGFLAGS)
 
 all: main
 
-main: main.cxx src/DataExtraction.cxx src/Measurement.cxx
+main: main.cxx src/DataExtraction.cxx src/Measurement.cxx src/ConsDays.cxx
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 src/%.o: src/%.cxx
-	$(CXX) $(CXXFLAGS) $^ -c -o $@
+	$(CXX) $(CXXFLAGS) $^ -c -o $@ 
 
 clean:
 	rm -v src/*.o main

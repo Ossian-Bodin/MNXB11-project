@@ -11,7 +11,7 @@ LDFLAGS := $(ROOTFLAGS) $(ARGFLAGS)
 
 all: main
 
-main: main.cxx src/DataExtraction.cxx src/Measurement.cxx
+main: main.cxx src/DataExtraction.cxx src/Measurement.cxx src/meanTemp.cxx
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 src/%.o: src/%.cxx

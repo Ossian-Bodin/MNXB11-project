@@ -111,16 +111,12 @@ int main(int argc, char *argv[]) {
     
     case 5:
     {
-        // testing plotTemperatureOnly (measurements is read before switch statement)
-        auto temp = computeMonthlyTemp(measurements, 1972, 2019); // fill struct
-        plotTemperatureOnly(temp); // plot using struct
-
-        // testing plotTempVSsales
-        plotTempVsSales(measurements, 2007, 2010);
-
+      // ice cream sales vs average monthly temperature
+        plotTempVsSales(measurements, 1972, 2019); // note: 2020 doesn't seem to work, still alignment issues?
 
       break;
     }
+
     case 6:
       std::cout << "Running all analyzes!" << std::endl;
       // some_analysis(measurements, output_file);

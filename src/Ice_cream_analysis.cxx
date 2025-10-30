@@ -118,33 +118,6 @@ TemperatureData computeMonthlyTemp(const std::vector<Measurement>& measurements,
 
 }
 
-void plotTemperatureOnly(const TemperatureData& temp) 
-{
-
-    // Create histogram with N bins = number of months
-    int nBins = temp.avgTemps.size();
-    TH1D* hist = new TH1D("tempHist", "Average Monthly Temperature;Month index;Temperature (C)", nBins, 0, nBins);
-
-    for (int i = 0; i < nBins; ++i) 
-    {
-        hist->SetBinContent(i + 1, temp.avgTemps[i]); // bins start at 1 for some reason
-    }
-
-    auto canv = new TCanvas("canv", "Monthly Temperature", 1200, 600);
-    
-    hist->SetLineColor(kBlue);
-    hist->SetLineWidth(2);
-    hist->SetFillColorAlpha(kBlue - 3, 0.3);
-    hist->GetXaxis()->SetAxisColor(kBlack);
-    hist->SetTitle("Average Monthly Temperature;Temperature (C)");
-    
-    hist->Draw("HIST");
-
-    canv->SaveAs("results/temp_only.png");
-    canv->SaveAs("results/temp_only.root");
-
-}
-
 
 void plotTempVsSales(const std::vector<Measurement>& measurements, int startyear, int stopyear) 
 {

@@ -23,10 +23,11 @@ struct IceCreamData
     std::vector<double> sales;
 };
 
-IceCreamData readIceCreamCSV(); // function defined on struct IceCreamData
+IceCreamData readIceCreamCSV();
+IceCreamData filterIceCreamByYear(const IceCreamData& fullData, int startYear, int stopYear);
 
 
-// struct for handling SMHI data
+// struct for storing (year, month) <--> avgTemp
 struct TemperatureData
 {
     std::vector<int> years;
@@ -36,9 +37,7 @@ struct TemperatureData
 
 TemperatureData computeMonthlyTemp(const std::vector<Measurement>& meas, int startyear, int stopyear);
 
-
-// Plotting functions
-void plotTemperatureOnly(const TemperatureData& temp);
+// Plotting function
 void plotTempVsSales(const std::vector<Measurement>& measurements, int startyear, int stopyear);
 
 

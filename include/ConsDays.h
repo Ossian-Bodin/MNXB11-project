@@ -21,9 +21,9 @@ struct ConsDays {
 
 std::vector<ConsDays> getConsDays(const std::vector<Measurement>& measurements);
 
-void plotConsDaysHist(const std::vector<Measurement>& measurements);
+void plotConsDaysHist(std::vector<ConsDays>& res);
 
-void plotConsDayYear();
+void plotConsDayYear(std::vector<ConsDays>& res);
 
 bool isLeapYear(int year);
 

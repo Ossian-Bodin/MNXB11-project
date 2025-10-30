@@ -98,43 +98,11 @@ int main(int argc, char *argv[]) {
     }
     case 2: {
       std::cout << "Running a second analysis" << std::endl;
-      // some_other_analysis(measurements, output_file);
-      // Date date1;
-      // Date date2;
-      // Date date3;
-      // Date date4;
-      // Date date5;
-
-      // date1.year=2024;
-      // date1.month=12;
-      // date1.day=31;
-
-      // date2.year=2025;
-      // date2.month=1;
-      // date2.day=1;
-
-      // date3.year=2025;
-      // date3.month=1;
-      // date3.day=2;
-
-      // date4.year=2025;
-      // date4.month=1;
-      // date4.day=31;
-
-      // date5.year=2025;
-      // date5.month=2;
-      // date5.day=1;
-
-      // std::cout << isNextDay(date1,date2) << std::endl;
-      // std::cout << isNextDay(date2,date3) << std::endl;
-      // std::cout << isNextDay(date4,date5) << std::endl;
-      // std::cout << isNextDay(date4,date1) << std::endl;
 
       auto res{getConsDays(measurements)};
 
-      plotConsDaysHist(measurements);
+      plotConsDaysHist(res);
 
-      std::cout << res[0].cons_days << std::endl;
       break;
     }
     case 3: {

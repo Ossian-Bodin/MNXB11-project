@@ -71,7 +71,7 @@ std::vector<ConsDays> getConsDays(const std::vector<Measurement>& measurements) 
 
   Date current_date;
   
-  bool nondecreasing{avg_temp_day[1] > avg_temp_day[0]};
+  bool nondecreasing{avg_temp_day[1] >= avg_temp_day[0]};
 
   // Iterate over the average temperatures starting from 
   // the third day so we can can now if the 
@@ -128,7 +128,7 @@ std::vector<ConsDays> getConsDays(const std::vector<Measurement>& measurements) 
       // Missing measurments the day after the last so
       // assume the streak ended and add it
       ConsDays new_val;
-      new_val.nondecreasing = true;
+      new_val.nondecreasing = nondecreasing;
       new_val.cons_days = cons_days;
       new_val.date = current_date;
     
@@ -154,7 +154,7 @@ std::vector<ConsDays> getConsDays(const std::vector<Measurement>& measurements) 
 
       // Now we should have two days that are following each other
       // so we reset as we did in the start
-      nondecreasing = avg_temp_day[i] > avg_temp_day[i-1];
+      nondecreasing = avg_temp_day[i] >= avg_temp_day[i-1];
       cons_days = 1;
     }
 
@@ -165,12 +165,11 @@ std::vector<ConsDays> getConsDays(const std::vector<Measurement>& measurements) 
   return res;
 }
 
-void plotConsDaysHist(const std::vector<Measurement>& measurements) {
-  std::vector<ConsDays> res{getConsDays(measurements)};
+void plotConsDaysHist(std::vector<ConsDays>& res) {
   TCanvas *c1 = new TCanvas("c1","");
   c1->cd();
   double xmin{0.5};
-  double xmax{20.5};
+  double xmax{50.5};
   int nbins{int(xmax-xmin)};
 
   TH1F* h1 = new TH1F("h1","", nbins, xmin, xmax);
@@ -204,7 +203,7 @@ void plotConsDaysHist(const std::vector<Measurement>& measurements) {
   TF1 *fit2 = (TF1*)fit1->Clone("fit2");
   fit1->SetParameters(h1->GetBinContent(2), 0.5);
 
-  h1->Fit("fit1", "RN");
+  h1->Fit("fit1", "RNq");
   fit1->SetLineColor(kRed);
   fit1->SetLineWidth(1);
   fit1->SetLineStyle(2);
@@ -213,7 +212,7 @@ void plotConsDaysHist(const std::vector<Measurement>& measurements) {
   std::cout << "a = " << a1 << ", b = " << b1 << std::endl;
   TString fit1_text{Form("Nondecreasing fit: %.0f#times %.2f^{n}", a1, b1)};
 
-  h2->Fit("fit2", "RN");
+  h2->Fit("fit2", "RNq");
   fit2->SetLineColor(kBlue);
   fit2->SetLineWidth(1);
   fit2->SetLineStyle(2);
@@ -224,9 +223,12 @@ void plotConsDaysHist(const std::vector<Measurement>& measurements) {
 
   gStyle->SetOptStat(0);
 
-  double max1 = h1->GetMaximum();
-  double max2 = h2->GetMaximum();
-  h1->SetMaximum(std::max(max1, max2) * 1.1);
+  double xmax1 = h1->GetMaximum();
+  double xmax2 = h2->GetMaximum();
+  double ymax1 = h1->GetMaximum();
+  double ymax2 = h2->GetMaximum();
+  h1->SetMaximum(std::max(ymax1, ymax2) * 1.1);
+  h1->GetXaxis()->SetRangeUser(xmin, std::max(xmax1, xmax2) * 1.1);
 
   h1->GetXaxis()->SetTitle("Consecutive days");
   h1->GetYaxis()->SetTitle("Entries");
@@ -247,14 +249,17 @@ void plotConsDaysHist(const std::vector<Measurement>& measurements) {
   legend->SetTextSize(0.03);
   legend->Draw();
 
-  c1->SaveAs("results/cons_test.pdf");
+  c1->SaveAs("results/ConsDaysHist.pdf");
 }
 
-// void plotConsDaysYear() {
+// void plotConsDaysYear(std::vector<ConsDays>& res) {
 //   // Plot most consecutive days of increasing and decreasing 
 //   // temperature for each year and do different color for
 //   // each e.g. red/blue for increasing/decreasing
-//   T1HI* h1 = new T1HI("h1","Consecutive");
+//   TCanvas *c1 = new TCanvas("c1","");
+//   c1->cd();
+
+
 // }
 
 bool isLeapYear(int year) {

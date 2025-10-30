@@ -8,6 +8,8 @@
 #include <string>
 #include <filesystem>
 
+#include "Ice_cream_analysis.h"
+
 namespace fs = std::filesystem;
 
 int main(int argc, char *argv[]) {
@@ -110,10 +112,16 @@ int main(int argc, char *argv[]) {
       tempReader("results/output.root");
       // some_other_analysis(measurements, output_file);
       break;
+    
+    
     case 5:
-      std::cout << "Running a third analysis" << std::endl;
-      // some_other_analysis(measurements, output_file);
+    {
+      // ice cream sales vs average monthly temperature
+        plotTempVsSales(measurements, 1972, 2019); // note: 2020 doesn't seem to work, still alignment issues?
+
       break;
+    }
+
     case 6:
       std::cout << "Running all analyzes!" << std::endl;
       // some_analysis(measurements, output_file);
@@ -125,6 +133,9 @@ int main(int argc, char *argv[]) {
                 << std::endl;
       std::exit(2);
   }
+
+
+
 
 
 

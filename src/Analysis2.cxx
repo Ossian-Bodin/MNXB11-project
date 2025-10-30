@@ -63,10 +63,13 @@ void analysis2(const std::vector<Measurement>& data, const std::string& output_f
 
 //2) group temperature by day of the year
 //The suggested outline for my code was to use a map
-//I am not familiar with a map so i thought now was a good time to learn
-//can handle if data is missing or out of order
+//I thought that was excessive. Originally I did use a map, I learned what to write, but it felt too clunky.
+//Like it served no purpose in this specific dataset, since its pretty straight forward. I thought a vector would work fine
+//So i went back and re-wrote it simpler(oct 30)
 
-std::map<int, std::vector<double>> tempsonday;
+//std::map<int, std::vector<double>> tempsonday; (old code for map)
+const int nDays = 366; //has to be 366 because of leap years
+std::vector<double> tempsonday[nDays];
 
 for (const auto& m : data){
     //keep feb 1 2005 --> feb 1 2023, discard rest of data
@@ -74,30 +77,28 @@ for (const auto& m : data){
     if (m.getYear() < 2005 || (m.getYear() == 2005 && (m.getMonth() < 2 || (m.getMonth() == 2 && m.getDay() < 1)))) continue;
     if (m.getYear() > 2023 || (m.getYear() == 2023 && (m.getMonth() > 2 || (m.getMonth() == 2 && m.getDay() > 1)))) continue;
 
-    int dayIndex = calc_day_num(m.getYear(), m.getMonth(), m.getDay());
+    int dayIndex = calc_day_num(m.getYear(), m.getMonth(), m.getDay() - 1);
     tempsonday[dayIndex].push_back(m.getTemperature());}
 
 //3) make my histogram (one bin = one day)
-const int nDays = 366; //has to be 366 because of leap years
 TH1F* AvgTemp = new TH1F("AvgTemp", "Mean Daily Temperature (February 1 2005 - February 1 2023);Day of Year;Temperature [C]", nDays, 0.5, nDays + 0.5);
 
 //4) get mean temperature and get standard deviation for every day
 //also fill the histogram with data using fill template
 
 //ROOT has stuff for this, TMath header
+for (int day = 0; day < nDays; ++day) {
+    
+        if (tempsonday[day].empty()) continue; //check if day, and days temp, exists bc of leap year
 
-for (int day = 1; day <= nDays; ++day) {
-        auto dailydata = tempsonday.find(day);
-        if (dailydata == tempsonday.end() || dailydata->second.empty()) continue; //check if day, and days temp, exists
-
-        const auto& temps = dailydata->second; //temperatures for every instance of the same date
-
+        const auto& temps = tempsonday[day]; //temperatures for every instance of the same date
+        //calculate mean and standarddeviation
         double meantemp = TMath::Mean(temps.size(), temps.data());
         double standarddeviation = TMath::StdDev(temps.size(), temps.data());
 
         //use figure 2 hint in project instructions for error bars
-        AvgTemp->SetBinContent(day, meantemp);
-        AvgTemp->SetBinError(day, standarddeviation);
+        AvgTemp->SetBinContent(day + 1, meantemp);
+        AvgTemp->SetBinError(day + 1, standarddeviation);
     }
 
 //5) make my histogram MINE and also cool

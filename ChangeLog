@@ -42,13 +42,14 @@
 	* Hopefully finished everything (not including main.cxx link or my latex report)
 	* Compiled it to test if it works (it does)
 	* Customized my histogram
-	* Had to fix paths
+	* Had to fix paths?
 
 2025-10-30 Emma Krvaric <emma.krvaric.1546@student.lu.se>
 
 	Final edits before turn-in!
 
-	* Renamed almost all variables for clarity for outside readers
-	* Changed my output file to update instead of recreate
+	* Renamed almost all variables for clarity for outside readers?
+	* Changed my output file to update instead of recreate for 1 neat group file
 	* Started my portion of the report in overleaf
-	* Decided to keep all of my notes, might delete once report is finished.
+	* Tried to make my code less clunky? I think it is still really inefficient but i dont know what i would change
+	* Decided to keep all of my notes, might delete once report is finished, but they reflect my thought process

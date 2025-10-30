@@ -39,7 +39,7 @@ TemperatureData computeMonthlyTemp(const std::vector<Measurement>& meas, int sta
 
 // Plotting functions
 void plotTemperatureOnly(const TemperatureData& temp);
-//void plotTempVsSales(const std::string& tempFileName, int startyear, int stopyear);
+void plotTempVsSales(const std::vector<Measurement>& measurements, int startyear, int stopyear);
 
 
 

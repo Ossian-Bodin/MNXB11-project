@@ -128,76 +128,69 @@ void plotTemperatureOnly(const TemperatureData& temp)
 }
 
 
-// void plotTempVsSales(const std::string& tempFileName, int startyear, int stopyear) 
-// {
-//     std::cout << "Plotting sales vs temperature data..." << std::endl;
+void plotTempVsSales(const std::vector<Measurement>& measurements, int startyear, int stopyear) 
+{
+    std::cout << "Plotting ice crem sales vs monnthly temperature "
+    << "for years " << startyear << "-" << stopyear << std::endl;
 
-//     // read the data to the corresponding structs
-//     TemperatureData temp = computeMonthlyTemp(tempFileName, startyear, stopyear);
-//     IceCreamData iceCream = readIceCreamCSV();
+    // read the data to the corresponding structs
+    TemperatureData temp = computeMonthlyTemp(measurements, startyear, stopyear);
+    IceCreamData iceCream = readIceCreamCSV();
 
+    // trim the temp data set to have same number of elements as sales (sales data set is fixed, i.e. we want to use all its data)
+    if (temp.avgTemps.size() > iceCream.sales.size()) {
+        temp.avgTemps.resize(iceCream.sales.size());
+    }
 
-//     // testing iceCream container
-//     for (int i = 0; i < 10; ++i)
-//     {
-//         std::cout << iceCream.sales[i] << std::endl;
-//     }
-
-
-//     // trim the temp data set to have same number of elements as sales (sales data set is fixed, i.e. we want to use all its data)
-//     if (temp.avgTemps.size() > iceCream.sales.size()) {
-//         temp.avgTemps.resize(iceCream.sales.size());
-//     }
-
-//     if (temp.avgTemps.size() != iceCream.sales.size()) {
-//         std::cerr << "ERROR: Still mismatched after trimming!\n";
-//         return;
-//     }
+    if (temp.avgTemps.size() != iceCream.sales.size()) {
+        std::cerr << "ERROR: Still mismatched after trimming!\n";
+        return;
+    }
     
-//     int nBins = temp.avgTemps.size();
+    int nBins = temp.avgTemps.size();
 
-//     TH1D* tempHist = new TH1D("tempHist", "Temperature VS Ice Cream Sales", nBins, 0, nBins);
-//     TH1D* salesHist = new TH1D("salesHist", "Sales", nBins, 0, nBins);
+    TH1D* tempHist = new TH1D("tempHist", "Temperature VS Ice Cream Sales", nBins, 0, nBins);
+    TH1D* salesHist = new TH1D("salesHist", "Sales", nBins, 0, nBins);
 
 
-//     for (int i = 0; i < nBins; ++i)
-//     {
-//         tempHist->SetBinContent(i + 1, temp.avgTemps[i]);
-//         salesHist->SetBinContent(i + 1, 0.1*iceCream.sales[i]); // may need offset bc |sales[i]| >> |temp[i]| (arb 0.1* for now)
-//     }
+    for (int i = 0; i < nBins; ++i)
+    {
+        tempHist->SetBinContent(i + 1, temp.avgTemps[i]);
+        salesHist->SetBinContent(i + 1, 0.1*iceCream.sales[i]); // may need offset bc |sales[i]| >> |temp[i]| (arb 0.1* for now)
+    }
 
-//     auto canv = new TCanvas("canv", "Monthly Temperature VS Ice cream sales", 1200, 600);
+    auto canv = new TCanvas("canv", "Monthly Temperature VS Ice cream sales", 1200, 600);
 
-//     tempHist->SetLineColor(kBlue);
-//     tempHist->SetFillColorAlpha(kBlue - 3, 0.3);
-//     tempHist->Draw("HIST");
+    tempHist->SetLineColor(kBlue);
+    tempHist->SetFillColorAlpha(kBlue - 3, 0.3);
+    tempHist->Draw("HIST");
 
-//     // set axes
-//     tempHist->GetXaxis()->SetTitle("Months from 1972-01 to 2020-01");
-//     tempHist->GetYaxis()->SetTitle("Temperature");
-//     tempHist->GetXaxis()->CenterTitle();
-//     tempHist->GetYaxis()->CenterTitle();
+    // set axes
+    tempHist->GetXaxis()->SetTitle("Months from 1972-01 to 2020-01");
+    tempHist->GetYaxis()->SetTitle("Temperature");
+    tempHist->GetXaxis()->CenterTitle();
+    tempHist->GetYaxis()->CenterTitle();
 
     
 
-//     salesHist->SetLineColor(kRed);
-//     salesHist->SetFillColorAlpha(kRed - 3, 0.4);
-//     salesHist->Draw("HIST SAME");
+    salesHist->SetLineColor(kRed);
+    salesHist->SetFillColorAlpha(kRed - 3, 0.4);
+    salesHist->Draw("HIST SAME");
 
     
 
-//     // Drawing a y=0 line
-//     double xmin = tempHist->GetXaxis()->GetBinLowEdge(1);
-//     double xmax = tempHist->GetXaxis()->GetBinUpEdge(tempHist->GetNbinsX());
+    // Drawing a y=0 line
+    double xmin = tempHist->GetXaxis()->GetBinLowEdge(1);
+    double xmax = tempHist->GetXaxis()->GetBinUpEdge(tempHist->GetNbinsX());
 
-//     TLine* line = new TLine(xmin, 0, xmax, 0);
-//     line->SetLineColor(kBlack);
-//     line->SetLineWidth(2);
-//     line->Draw("SAME"); 
+    TLine* line = new TLine(xmin, 0, xmax, 0);
+    line->SetLineColor(kBlack);
+    line->SetLineWidth(2);
+    line->Draw("SAME"); 
 
-//     canv->SaveAs("results/temp_vs_sales_test.png");
-//     canv->SaveAs("results/temp_vs_sales_test.root");
+    canv->SaveAs("results/temp_vs_sales_test.png");
+    canv->SaveAs("results/temp_vs_sales_test.root");
 
-//     std::cout << "Saved to results/temp_vs_sales_overlay_scaled.png\n";
-// }
+    std::cout << "Saved to results/temp_vs_sales_overlay_scaled.png\n";
+}
  

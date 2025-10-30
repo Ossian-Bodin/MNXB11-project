@@ -112,11 +112,11 @@ int main(int argc, char *argv[]) {
     case 5: // testing Ice_cream
     {
         // testing plotTemperatureOnly (measurements is read before switch statement)
-        auto temp = computeMonthlyTemp(measurements, 1972, 2019); // fill struct
+        auto temp = computeMonthlyTemp(measurements, 1972, 2020); // fill struct
         plotTemperatureOnly(temp); // plot using struct
 
         // testing plotTempVSsales
-        //plotTempVsSales("datasets/baredata_smhi-opendata_1_52230_20231007_155448_Falsterbo.csv", 1972, 2020);
+        plotTempVsSales(measurements, 1972, 2020);
 
 
       break;

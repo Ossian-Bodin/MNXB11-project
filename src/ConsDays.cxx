@@ -26,8 +26,11 @@ std::vector<ConsDays> getConsDays(const std::vector<Measurement>& measurements) 
   int current_year{-1};
 
   for (const auto &measurement : measurements) {
-    if (current_day != measurement.getDay() || current_month != measurement.getMonth() || current_year != measurement.getYear()) {
-      // If there were measurements for the previous day, calculate the average and add to vector
+    if (current_day != measurement.getDay() 
+      || current_month != measurement.getMonth() 
+      || current_year != measurement.getYear()) {
+      // If there were measurements for the previous day, 
+      // calculate the average and add to vector
       if (num_measurements != 0) {
         avg_temp /= num_measurements;
         avg_temp_day.push_back(avg_temp);
@@ -70,8 +73,8 @@ std::vector<ConsDays> getConsDays(const std::vector<Measurement>& measurements) 
   
   bool nondecreasing{avg_temp_day[1] > avg_temp_day[0]};
 
-  // Iterate over the average temperatures starting from the third day so we can can
-  // now if the 
+  // Iterate over the average temperatures starting from 
+  // the third day so we can can now if the 
   for (int i{2} ; i < n_len ; ++i) {
 
     current_date.day = days[i];
@@ -80,7 +83,6 @@ std::vector<ConsDays> getConsDays(const std::vector<Measurement>& measurements) 
 
     // Check if the next measurement is the day after the previous one
     if (isNextDay(current_date, previous_date)) {
-      // std::cout<< "It was next day" << std::endl;
       // Check if temperature is nondecreasing
       if (avg_temp_day[i] >= previous_temp) {
         // If it was nondecreasing already, add 1 to cons_days counter. 
@@ -192,7 +194,7 @@ void plotConsDaysHist(const std::vector<Measurement>& measurements) {
     }
   }
 
-  TString hist_text{Form("#splitline{Consecutive days of nondecreasing/decreasing temperature}{between the years %d-%d}", min_year, max_year)};
+  TString hist_text{Form("#splitline{Consecutive days of nondecreasing/decreasing daily}{average temperature between the years %d-%d}", min_year, max_year)};
 
   h1->SetTitle(hist_text);
   gPad->SetTopMargin(0.15);
@@ -209,7 +211,7 @@ void plotConsDaysHist(const std::vector<Measurement>& measurements) {
   double a1{fit1->GetParameter("p0")};
   double b1{fit1->GetParameter("p1")};
   std::cout << "a = " << a1 << ", b = " << b1 << std::endl;
-  TString fit1_text{Form("Nondecreasing fit: %.0f#times %.2f^{x}", a1, b1)};
+  TString fit1_text{Form("Nondecreasing fit: %.0f#times %.2f^{n}", a1, b1)};
 
   h2->Fit("fit2", "RN");
   fit2->SetLineColor(kBlue);
@@ -218,7 +220,7 @@ void plotConsDaysHist(const std::vector<Measurement>& measurements) {
   double a2{fit2->GetParameter("p0")};
   double b2{fit2->GetParameter("p1")};
   std::cout << "a = " << a2 << ", b = " << b2 << std::endl;
-  TString fit2_text{Form("Decreasing fit: %.0f#times %.2f^{x}", a2, b2)};
+  TString fit2_text{Form("Decreasing fit: %.0f#times %.2f^{n}", a2, b2)};
 
   gStyle->SetOptStat(0);
 
@@ -270,11 +272,13 @@ bool isLeapYear(int year) {
 }
 
 int getDaysPerMonth(int year, int month) {
-  // If month is one of January, March, May, July, August, October, or December is has 31 days
+  // If month is one of January, March, May, July, 
+  // August, October, or December is has 31 days
   if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
     return 31;
   }
-  // If month is February it has 29 if it is a leap year, otherwise it has 28
+  // If month is February it has 29 days if it is a leap year, 
+  // otherwise it has 28
   else if (month == 2) {
     if (isLeapYear(year)) {
       return 29;

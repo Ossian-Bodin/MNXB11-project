@@ -104,6 +104,10 @@ int main(int argc, char *argv[]) {
       break;
     case 4:
       std::cout << "Running a fourth analysis" << std::endl;
+      std::cout << "Persisting raw measurement data to file " << output_file
+                << std::endl;
+      persist_measurements(measurements, output_file);
+      tempReader("results/output.root");
       // some_other_analysis(measurements, output_file);
       break;
     case 5:
@@ -122,7 +126,7 @@ int main(int argc, char *argv[]) {
       std::exit(2);
   }
 
-  tempReader("results/output.root");
+
 
   return 0;
 }

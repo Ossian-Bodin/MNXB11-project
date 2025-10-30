@@ -14,37 +14,55 @@ void tempReader(const std::string& filename) {
   TTreeReader reader{tree};
   TTreeReaderValue<int> year{reader, "year"};
   TTreeReaderValue<int> day{reader, "day"};
+  TTreeReaderValue<int> hour{reader, "hour"};
   TTreeReaderValue<double> temp{reader, "temp"};
 
-  int minyear{1780};
-  int maxyear{2023};
-  int bins{maxyear - minyear + 1};
+  int minyear = INT_MAX;
+  int maxyear = INT_MIN;
+  int bincount{0};
+  while (reader.Next()) {
+    maxyear = std::max(maxyear, *year);
+    minyear = std::min(minyear, *year);
+  }
+  bincount = maxyear - minyear + 1;
+  reader.Restart();  // Restart reader to beginning of TTree};
   auto averageTempHist =
-      new TH1D("averageTempHist", "Average Yearly Temperature", bins, minyear,
-               maxyear + 1);
+      new TH1D("averageTempHist", "Average Yearly Temperature", bincount,
+               minyear, maxyear + 1);
 
-  reader.Next();  // Need this for initial value
-  int currentyear{*year};
-  double FetchedTemp{0.0};
-  int i{0};
-  while (reader.Next()) {  //Check through all entries in TTree
-    if (*year == 1958 || *year == 1959 || *year == 1960) {
-      averageTempHist->SetBinContent(*year - minyear + 1, 0); // Mark missing years with 0
-      reader.Next(); // Skip years with faulty data
+  while (reader.Next()) {
+    if (*year == minyear) {
       break;
     }
-    else if (*year != currentyear) { // Fill histogram when year changes
+  }
+  std::cout <<"Starting on year: " << minyear <<" and ending on year: " << maxyear << std::endl;
+  int currentyear{*year};
+  double FetchedTemp{0.0};
+  double totaltemp{0.0};
+  int i{0};
+  int toti{0};
+  while (reader.Next()) {        // Check through all entries in TTree
+    if (*year != currentyear) {  // Fill histogram when year changes
       FetchedTemp = FetchedTemp / i;
-      averageTempHist->Fill(*year, FetchedTemp);
+      averageTempHist->Fill(currentyear, FetchedTemp);
       i = 0;
       FetchedTemp = 0.0;
-      currentyear = *year; //Reset parameters and go on to next year
+      currentyear = *year;  // Reset parameters and go on to next year
+      toti++;
+      totaltemp += *temp;  // For total average
 
-    } else {
-      FetchedTemp += *temp; // Sum temperatures for the year
+    } else{ 
+      FetchedTemp += *temp;  // Sum temperatures for the year
+      totaltemp += *temp;    // For total average
       i++;
+      toti++;
     }
+    
   }
+
+  double totalaverageTemp = totaltemp / toti;
+  std::cout << "Total average temperature: " << totalaverageTemp << " C"
+            << std::endl;
   averageTempHist->GetXaxis()->CenterTitle();
   averageTempHist->GetYaxis()->CenterTitle();
   averageTempHist->GetYaxis()->SetTitle("Average Temperature (C)");
@@ -52,25 +70,16 @@ void tempReader(const std::string& filename) {
   averageTempHist->GetXaxis()->SetTitleOffset(1.2);
   averageTempHist->GetYaxis()->SetTitleOffset(1.1);
   averageTempHist->SetAxisRange(-5, 30, "Y");
-  auto graph{new TGraph()};
-  for (int bin = 1; bin < averageTempHist->GetNbinsX(); ++bin) {
-    graph->Expand(graph->GetN() + 1, 100);
-    graph->SetPoint(graph->GetN(), averageTempHist->GetBinCenter(bin),
-                    averageTempHist->GetBinContent(bin));
-  }
-  graph->SetLineColor(kRed);
-  graph->SetLineWidth(2);
+
 
   TFile* outputFile = new TFile("results/meanTemperature.root", "RECREATE");
-  auto *c1 = new TCanvas("Average Temperature Graph", "Average Temperature Graph");
+  auto* c1 =
+      new TCanvas("Average Temperature Graph", "Average Temperature Graph");
 
+    averageTempHist->SetTitle("Average Yearly Temperature");
   outputFile->cd();
   averageTempHist->Draw("P");
-  graph->Draw("SAME");
   c1->Write();
   outputFile->Close();
-  
+
 };
-
-
-

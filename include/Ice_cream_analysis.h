@@ -34,12 +34,12 @@ struct TemperatureData
     std::vector<double> avgTemps;
 };
 
-TemperatureData computeMonthlyTemp(const std::string& filename, int startyear, int stopyear);
+TemperatureData computeMonthlyTemp(const std::vector<Measurement>& meas, int startyear, int stopyear);
 
 
 // Plotting functions
-void plotTemperatureOnly(const std::string& filename, int startyear, int stopyear);
-void plotTempVsSales(const std::string& tempFileName, int startyear, int stopyear);
+void plotTemperatureOnly(const TemperatureData& temp);
+//void plotTempVsSales(const std::string& tempFileName, int startyear, int stopyear);
 
 
 

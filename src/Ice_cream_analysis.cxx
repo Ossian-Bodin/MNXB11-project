@@ -53,103 +53,54 @@ IceCreamData readIceCreamCSV()
 }
 
 
-TemperatureData computeMonthlyTemp(const std::string& filename, int startyear, int stopyear)
+TemperatureData computeMonthlyTemp(const std::vector<Measurement>& measurements, int startyear, int stopyear)
 {
     TemperatureData tempData; // create empty struct to store year, month, tempAvg
 
-    std::ifstream file(filename); // open temperature file (filename)
-    if(!file.is_open())
-    {
-        std::cerr << "Error opening temperature file " << filename << std::endl;
-        return tempData; // if fail open, return the (empty) struct
-    }
 
     // for each key (month, year) associate a vector containing all (hourly) temperature readings that (month, year)
     std::map<std::pair<int,int>, std::vector<double>> tempMonthBox; // to be averaged
 
-
-
-    std::string line;
-
-    while (std::getline(file, line)) // loop through the lines of (filename)
+    for (const auto& m: measurements)
     {
-        if (line.empty())
-            continue;
-        
-        std::stringstream ss(line);     
-        double temp;
-        std::string date, time;
-        std::string quality;
+        // get data from Measurement class
+        int year = m.getYear();
+        int month = m.getMonth();
+        double temp = m.getTemperature(); 
 
-        ss >> date >> time >> temp >> quality;  // parsing the line structure yyyy-mm-dd hh:mm:ss temp quality (ignoring time of day and quality)
-        // can we use readMeasurements instead???
-
-        int year = std::stoi(date.substr(0, 4));    // substr(start char, len)
-        int month = std::stoi(date.substr(5, 2));   // stoi -> cast string to int
-
-
-        if (year < startyear || year > stopyear)
-            continue;
-
-        
-        tempMonthBox[{year, month}].push_back(temp); // collect monthly temperature readings in the keyed boxes
+        if (year >= startyear && year <= stopyear)
+        {
+            tempMonthBox[{year, month}].push_back(temp);  // fill the map with temps (for averaging)
+        }
     }
-
-    // // testing the map
-    // {
-
-    //     int testYear = 1970;
-    //     int testMonth = 1; 
-
-    //     auto key = std::make_pair(testYear, testMonth);
-    //     auto it = tempMonthBox.find(key);
-
-    //     std::cout << "Found " << it->second.size()
-    //             << " temperature readings for "
-    //             << testYear << "-" << testMonth << ":\n";
-
-    //     for (double t : it->second) 
-    //     {
-    //         std::cout << t << "\n";
-    //     }
-    //     std::cout << std::endl;
-    //     std::cout << "end of test" << std::endl;
-    // }  
-
 
     for (int year = startyear; year <= stopyear; ++year)
     {
         for (int month = 1; month <= 12; ++month)
         {
-            auto key{std::make_pair(year, month)};
-            auto i{tempMonthBox.find(key)}; // initialize the iterator i
-            
+            auto key = std::make_pair(year, month);
+            auto it = tempMonthBox.find(key); // iterator over key (GPT showed me iterators)
+
             double avg = 0.0;
+            if (it != tempMonthBox.end() && !it->second.empty())
+            {
+                double sum = std::accumulate(it->second.begin(), it->second.end(), 0.0);
+                avg = sum / it->second.size(); // compute the average temp (per month)
+            }
 
-            // using iterators here, thanks ChatGPT, second refers to map.second (i.e. the value, not the key)
-            if (i != tempMonthBox.end() && !i->second.empty())
-                avg = std::accumulate(i->second.begin(), i->second.end(), 0.0) / i->second.size(); // compute monthly average (sum[i]/count)
-        
-    
-
-            tempData.years.push_back(year); // fill the struct
+            // fill the struct
+            tempData.years.push_back(year);
             tempData.months.push_back(month);
             tempData.avgTemps.push_back(avg);
         }
     }
-    
-    file.close();
-    return tempData;
+
+    return tempData; 
 
 }
 
-void plotTemperatureOnly(const std::string& filename, int startyear, int stopyear) 
+void plotTemperatureOnly(const TemperatureData& temp) 
 {
-    std::cout << "computing average monthly temperature from " 
-    << filename << std::endl;
-    std::cout << " for years " << startyear << "-" << stopyear << std::endl;
-
-    TemperatureData temp = computeMonthlyTemp(filename, startyear, stopyear);
 
     // Create histogram with N bins = number of months
     int nBins = temp.avgTemps.size();
@@ -177,68 +128,76 @@ void plotTemperatureOnly(const std::string& filename, int startyear, int stopyea
 }
 
 
-void plotTempVsSales(const std::string& tempFileName, int startyear, int stopyear) 
-{
-    std::cout << "Plotting sales vs temperature data..." << std::endl;
+// void plotTempVsSales(const std::string& tempFileName, int startyear, int stopyear) 
+// {
+//     std::cout << "Plotting sales vs temperature data..." << std::endl;
 
-    // read the data to the corresponding structs
-    TemperatureData temp = computeMonthlyTemp(tempFileName, startyear, stopyear);
-    IceCreamData iceCream = readIceCreamCSV();
-
-
-    // testing iceCream container
-    for (int i = 0; i < 10; ++i)
-    {
-        std::cout << iceCream.sales[i] << std::endl;
-    }
+//     // read the data to the corresponding structs
+//     TemperatureData temp = computeMonthlyTemp(tempFileName, startyear, stopyear);
+//     IceCreamData iceCream = readIceCreamCSV();
 
 
-    // trim the temp data set to have same number of elements as sales (sales data set is fixed, i.e. we want to use all its data)
-    if (temp.avgTemps.size() > iceCream.sales.size()) {
-        temp.avgTemps.resize(iceCream.sales.size());
-    }
+//     // testing iceCream container
+//     for (int i = 0; i < 10; ++i)
+//     {
+//         std::cout << iceCream.sales[i] << std::endl;
+//     }
 
-    if (temp.avgTemps.size() != iceCream.sales.size()) {
-        std::cerr << "ERROR: Still mismatched after trimming!\n";
-        return;
-    }
+
+//     // trim the temp data set to have same number of elements as sales (sales data set is fixed, i.e. we want to use all its data)
+//     if (temp.avgTemps.size() > iceCream.sales.size()) {
+//         temp.avgTemps.resize(iceCream.sales.size());
+//     }
+
+//     if (temp.avgTemps.size() != iceCream.sales.size()) {
+//         std::cerr << "ERROR: Still mismatched after trimming!\n";
+//         return;
+//     }
     
-    int nBins = temp.avgTemps.size();
+//     int nBins = temp.avgTemps.size();
 
-    TH1D* tempHist = new TH1D("tempHist", "Temperature", nBins, 0, nBins);
-    TH1D* salesHist = new TH1D("salesHist", "Sales", nBins, 0, nBins);
-
-
-    for (int i = 0; i < nBins; ++i)
-    {
-        tempHist->SetBinContent(i + 1, temp.avgTemps[i]);
-        salesHist->SetBinContent(i + 1, 0.1*iceCream.sales[i]); // may need offset bc sales[i] >> temp[i]
-    }
-
-    auto canv = new TCanvas("canv", "Monthly Temperature VS Ice cream sales", 1200, 600);
-
-    tempHist->SetLineColor(kBlue);
-    tempHist->SetFillColorAlpha(kBlue - 3, 0.3);
-    tempHist->Draw("HIST");
-
-    salesHist->SetLineColor(kRed);
-    salesHist->SetFillColorAlpha(kRed - 3, 0.4);
-    salesHist->Draw("HIST SAME");
+//     TH1D* tempHist = new TH1D("tempHist", "Temperature VS Ice Cream Sales", nBins, 0, nBins);
+//     TH1D* salesHist = new TH1D("salesHist", "Sales", nBins, 0, nBins);
 
 
-    // Now safely get X range from visible bin edges:
-    double xmin = tempHist->GetXaxis()->GetBinLowEdge(1);
-    double xmax = tempHist->GetXaxis()->GetBinUpEdge(tempHist->GetNbinsX());
+//     for (int i = 0; i < nBins; ++i)
+//     {
+//         tempHist->SetBinContent(i + 1, temp.avgTemps[i]);
+//         salesHist->SetBinContent(i + 1, 0.1*iceCream.sales[i]); // may need offset bc |sales[i]| >> |temp[i]| (arb 0.1* for now)
+//     }
 
-    // THIS is the correct zero-line:
-    TLine* line = new TLine(xmin, 0, xmax, 0);
-    line->SetLineColor(kBlack);
-    line->SetLineWidth(2);
-    line->Draw("SAME");  // IMPORTANT: use SAME
+//     auto canv = new TCanvas("canv", "Monthly Temperature VS Ice cream sales", 1200, 600);
 
-    canv->SaveAs("results/temp_vs_sales_test.png");
-    canv->SaveAs("results/temp_vs_sales_test.root");
+//     tempHist->SetLineColor(kBlue);
+//     tempHist->SetFillColorAlpha(kBlue - 3, 0.3);
+//     tempHist->Draw("HIST");
 
-    std::cout << "Saved to results/temp_vs_sales_overlay_scaled.png\n";
-}
+//     // set axes
+//     tempHist->GetXaxis()->SetTitle("Months from 1972-01 to 2020-01");
+//     tempHist->GetYaxis()->SetTitle("Temperature");
+//     tempHist->GetXaxis()->CenterTitle();
+//     tempHist->GetYaxis()->CenterTitle();
+
+    
+
+//     salesHist->SetLineColor(kRed);
+//     salesHist->SetFillColorAlpha(kRed - 3, 0.4);
+//     salesHist->Draw("HIST SAME");
+
+    
+
+//     // Drawing a y=0 line
+//     double xmin = tempHist->GetXaxis()->GetBinLowEdge(1);
+//     double xmax = tempHist->GetXaxis()->GetBinUpEdge(tempHist->GetNbinsX());
+
+//     TLine* line = new TLine(xmin, 0, xmax, 0);
+//     line->SetLineColor(kBlack);
+//     line->SetLineWidth(2);
+//     line->Draw("SAME"); 
+
+//     canv->SaveAs("results/temp_vs_sales_test.png");
+//     canv->SaveAs("results/temp_vs_sales_test.root");
+
+//     std::cout << "Saved to results/temp_vs_sales_overlay_scaled.png\n";
+// }
  

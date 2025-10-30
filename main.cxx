@@ -110,42 +110,17 @@ int main(int argc, char *argv[]) {
     
     
     case 5: // testing Ice_cream
-      {
-        std::cout << "Testing Ice Cream CSV reader..." << std::endl;
+    {
+        // testing plotTemperatureOnly (measurements is read before switch statement)
+        auto temp = computeMonthlyTemp(measurements, 1972, 2019); // fill struct
+        plotTemperatureOnly(temp); // plot using struct
 
-        IceCreamData iceCream = readIceCreamCSV(); // instance of readCSV -> std::vec dates = iceCream.dates
-
-        std::cout << "Loaded " << iceCream.dates.size() << " entries.\n";
-        for (size_t i = 0; i < std::min<size_t>(iceCream.dates.size(), 5); ++i) {
-            std::cout << iceCream.dates[i] << " -> " << iceCream.sales[i] << "\n";
-        }
-
-        std::cout << "testing computeMonthlyTemp()..." << std::endl;
-
-
-        TemperatureData falsterbo = computeMonthlyTemp("datasets/baredata_smhi-opendata_1_52230_20231007_155448_Falsterbo.csv", 1970, 2020);
-         
-
-        std::cout << "Got " << falsterbo.avgTemps.size() << " month entries" << std::endl;
-        std::cout << falsterbo.months.size() << std::endl; // should (hopefully) be the same number
-
-
-        // testing tempMonthBox struct and computeAvg by printing:
-        for (int i = 0; i<5; ++i)
-        {
-          std::cout << falsterbo.years[i] << "-" << falsterbo.months[i] << " avg = " << falsterbo.avgTemps[i] << std::endl;
-        }
-
-
-        // testing plotTemperatureOnly
-        plotTemperatureOnly("datasets/baredata_smhi-opendata_1_52230_20231007_155448_Falsterbo.csv", 1972, 2000);
         // testing plotTempVSsales
-        plotTempVsSales("datasets/baredata_smhi-opendata_1_52230_20231007_155448_Falsterbo.csv", 1972, 2020);
+        //plotTempVsSales("datasets/baredata_smhi-opendata_1_52230_20231007_155448_Falsterbo.csv", 1972, 2020);
 
-      }
 
       break;
-
+    }
     case 6:
       std::cout << "Running all analyzes!" << std::endl;
       // some_analysis(measurements, output_file);

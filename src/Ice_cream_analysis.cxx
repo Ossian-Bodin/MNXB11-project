@@ -1,6 +1,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <iomanip>
 #include <map>
 #include <numeric>
 
@@ -21,15 +22,12 @@ IceCreamData readIceCreamCSV()
     IceCreamData data;
     const std::string& filename = "datasets/ice_cream.csv"; // hardcoded but fine for now. We only have this one dataset
     
-
-
     std::ifstream file(filename); // open file(filename) with ifstream
     if (!file.is_open())
     {
         std::cerr << "Error: cannot open file with name " << filename << std::endl;
         return data;
     }
-
 
     std::string line;
     std::getline(file, line); // skip header (first line of csv)
@@ -54,10 +52,30 @@ IceCreamData readIceCreamCSV()
 }
 
 
+IceCreamData filterIceCreamByYear(const IceCreamData& fullData, int startYear, int stopYear)
+{
+    IceCreamData filtered;
+    for (size_t i = 0; i < fullData.dates.size(); ++i)
+    {
+        const std::string& dateStr = fullData.dates[i];
+        if (dateStr.size() < 7) 
+            continue;
+
+        int year = std::stoi(dateStr.substr(0, 4));
+        if (year >= startYear && year <= stopYear)
+        {
+            filtered.dates.push_back(dateStr);
+            filtered.sales.push_back(fullData.sales[i]);
+        }
+    }
+    return filtered;
+}
+
+
+
 TemperatureData computeMonthlyTemp(const std::vector<Measurement>& measurements, int startyear, int stopyear)
 {
     TemperatureData tempData; // create empty struct to store year, month, tempAvg
-
 
     // for each key (month, year) associate a vector containing all (hourly) temperature readings that (month, year)
     std::map<std::pair<int,int>, std::vector<double>> tempMonthBox; // to be averaged
@@ -125,7 +143,6 @@ void plotTemperatureOnly(const TemperatureData& temp)
     canv->SaveAs("results/temp_only.png");
     canv->SaveAs("results/temp_only.root");
 
-
 }
 
 
@@ -136,19 +153,92 @@ void plotTempVsSales(const std::vector<Measurement>& measurements, int startyear
 
     // read the data to the corresponding structs
     TemperatureData temp = computeMonthlyTemp(measurements, startyear, stopyear);
-    IceCreamData iceCream = readIceCreamCSV();
+    IceCreamData iceCreamFull = readIceCreamCSV();
+    IceCreamData iceCream = filterIceCreamByYear(iceCreamFull, startyear, stopyear); // fill iceCream struct with data between startyear - stopyear
 
-    // trim the temp data set to have same number of elements as sales (sales data set is fixed, i.e. we want to use all its data)
-    if (temp.avgTemps.size() > iceCream.sales.size()) {
-        temp.avgTemps.resize(iceCream.sales.size());
-    }
+    
+
+    // check that data sets have equal number of months read.
+    size_t n = std::min(temp.avgTemps.size(), iceCream.sales.size()); // collect smallest data set length
 
     if (temp.avgTemps.size() != iceCream.sales.size()) {
-        std::cerr << "ERROR: Still mismatched after trimming!\n";
-        return;
+        std::cout << "Warning: datasets do not contain the same number of months.\n"
+        << "Using " << n << " common months." << std::endl;
     }
+
+    // makes sure the longer data set is resized to # common months
+    temp.avgTemps.resize(n);
+    iceCream.sales.resize(n);
+
+
+    //---------------------- print debug alignment -----------------------------------
+
+    std::cout << "\n--- Data Alignment Debug ---\n";
+    std::cout << "After resize: "
+            << temp.avgTemps.size() << " temperature entries vs. "
+            << iceCream.sales.size() << " sales entries.\n\n";
+
+    std::cout << std::left
+            << std::setw(15) << "IceCreamDate"
+            << std::setw(12) << "Sales"
+            << std::setw(12) << "TempDate"
+            << std::setw(10) << "AvgTemp"
+            << "\n";
+    std::cout << "-------------------------------------------------------------\n";
+
+    // Print first 10 entries for context
+    for (int N = 0; N < 10; ++N)
+    {
+        std::string iceDate = iceCream.dates[N];
+        double sale = iceCream.sales[N];
+
+        int year = temp.years[N];
+        int month = temp.months[N];
+        double avg = temp.avgTemps[N];
+
+        std::ostringstream ym;
+        ym << year << "-" << std::setw(2) << std::setfill('0') << month;
+
+        std::cout << std::left
+                << std::setw(15) << iceDate
+                << std::setw(12) << sale
+                << std::setw(12) << ym.str()
+                << std::setw(10) << avg
+                << "\n";
+    }
+
+    // Print last two entries
+    std::cout << "...\n";
+    for (size_t N = temp.years.size() - 2; N < temp.years.size(); ++N)
+    {
+        std::string iceDate = iceCream.dates[N];
+        double sale = iceCream.sales[N];
+
+        int year = temp.years[N];
+        int month = temp.months[N];
+        double avg = temp.avgTemps[N];
+
+        std::ostringstream ym;
+        ym << year << "-" << std::setw(2) << std::setfill('0') << month;
+
+        std::cout << std::left
+                << std::setw(15) << iceDate
+                << std::setw(12) << sale
+                << std::setw(12) << ym.str()
+                << std::setw(10) << avg
+                << "\n";
+    }
+
+    std::cout << "-------------------------------------------------------------\n";
+    std::cout << "Printed first 10 and last 2 aligned entries.\n\n";
+
+    // -------------------------------------------------------------------------------------------
     
-    int nBins = temp.avgTemps.size();
+
+
+    // cast # bins to common # months
+    int nBins = static_cast<int>(n);
+
 
     TH1D* tempHist = new TH1D("tempHist", "Temperature VS Ice Cream Sales", nBins, 0, nBins);
     TH1D* salesHist = new TH1D("salesHist", "Sales", nBins, 0, nBins);
@@ -157,9 +247,8 @@ void plotTempVsSales(const std::vector<Measurement>& measurements, int startyear
     for (int i = 0; i < nBins; ++i)
     {
         tempHist->SetBinContent(i + 1, temp.avgTemps[i]);
-        salesHist->SetBinContent(i + 1, iceCream.sales[i]); // may need offset bc |sales[i]| >> |temp[i]| (arb 0.1* for now)
+        salesHist->SetBinContent(i + 1, iceCream.sales[i]); 
     }
-
 
 
     auto canv = new TCanvas("canv", "Monthly Temperature VS Ice cream sales", 1200, 600);
@@ -173,7 +262,8 @@ void plotTempVsSales(const std::vector<Measurement>& measurements, int startyear
     tempHist->Draw("HIST");
 
     // set axes
-    tempHist->GetXaxis()->SetTitle("Months from 1972-01 to 2020-01");
+    std::string Xtitle = "Months from " + std::to_string(startyear) + " to " + std::to_string(stopyear);
+    tempHist->GetXaxis()->SetTitle(Xtitle.c_str());
     tempHist->GetYaxis()->SetTitle("Temperature [#circC]"); 
     tempHist->GetXaxis()->CenterTitle();
     tempHist->GetYaxis()->CenterTitle();
@@ -205,7 +295,7 @@ void plotTempVsSales(const std::vector<Measurement>& measurements, int startyear
     axis->SetLineColor(kRed);
     axis->SetLabelColor(kRed);
     axis->SetTitleColor(kRed);
-    axis->SetTitle("Ice Cream Sales");
+    axis->SetTitle("Ice Cream Sales [IPN31152N]");
     axis->CenterTitle(true);
 
     axis->SetLabelSize(tempHist->GetYaxis()->GetLabelSize());
@@ -233,9 +323,9 @@ void plotTempVsSales(const std::vector<Measurement>& measurements, int startyear
     legend->AddEntry(salesHist, "Monthly ice cream sales", "f");
     legend->Draw();
 
-    canv->SaveAs("results/temp_vs_sales_test.png");
-    canv->SaveAs("results/temp_vs_sales_test.root");
+    canv->SaveAs("results/temp_vs_sales.pdf");
+    canv->SaveAs("results/temp_vs_sales.root");
 
-    std::cout << "Saved to results/temp_vs_sales_overlay_scaled.png\n";
+    std::cout << "Saved to results/temp_vs_sales.pdf\n";
 }
  

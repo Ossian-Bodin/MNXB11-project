@@ -17,27 +17,36 @@
 	Group meeting #2, actually started work on Analysis 2.
 
 	* Chose the data I wanted to analyze (Uppsala)
-	* Cleaned the data using Ossian and Hugo's code
+	* Cleaned the data using Ossian's and Hugo's code
 
 2025-10-24 Emma Krvaric <emma.krvaric.1546@student.lu.se>
 
 	Created first rough draft of Analysis2.cxx and Analysis2.h
 
 	* Created both files and drafted out my steps in comments
-	* Completed header file, source is still a work in progress.
+	* Full disclosure: I asked ChatGPT for what the steps will look like, as I was completely lost. These steps are listed as numbered notes in my .cxx. and I referred to the github demo for extra help.
+	* Completed header file, but my source is still a work in progress.
 
 2025-10-25 Emma Krvaric <emma.krvaric.1546@student.lu.se>
 
 	Finished Analysis2.cxx partially
 
-	* Most important part was getting everything on the page first.
-	* Editing will come later (though I spent several hours on this so far)
+	* Most important part was getting everything on the page first, this is a draft essentially.
+	* I asked Chat GPT to look over my code because I was not sure if wrote the code to show me what I want
+	* Editing will come later (though I spent several hours on this so far ahhhhhhgg!!!)
 
 2025-10-26 Emma Krvaric <emma.krvaric.1546@student.lu.se>
 
 	Did a final look-over Analysis2.cxx
 
 	* Hopefully finished everything (not including main.cxx or my latex report)
-	* Compiled it to test if it works ()
-	* Altered visual aesthetics of histogram to personalize it and improve legibility
-	* realized i used absolute paths by mistake for testing, altered it to pass through main.cxx
+	* Compiled it to test if it works (it does)
+	* Altered visual aesthetics of histogram to personalize it
+	* realized i used absolute paths by mistake for testing, had to fix it
+
+2025-10-29 Emma Krvaric <emma.krvaric.1546@student.lu.se>
+
+	Asked teammates to look over my histogram code and began LATEX report
+
+	* Histogram wasnt doing want I wanted when I printed out the graph, I played with it to see if I could fix it.
+	* I began my .tex report for Analysis2, with help from my group, I am not familiar with Latex...

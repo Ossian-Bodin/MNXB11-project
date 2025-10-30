@@ -1,5 +1,10 @@
 #include <TH1I.h>
 #include <TCanvas.h>
+#include <TF1.h>
+#include <TStyle.h>
+#include <TLegend.h>
+#include <TString.h>
+#include <TGaxis.h>
 
 #include "Measurement.h"
 #include "DataExtraction.h"
@@ -48,6 +53,8 @@ std::vector<ConsDays> getConsDays(const std::vector<Measurement>& measurements) 
   // The return vector that stores the structs Consdays
   std::vector<ConsDays> res;
 
+  int n_len{int(avg_temp_day.size())};
+
   int cons_days{1};
 
   // We start from second measurement day because we cannot know if 
@@ -65,7 +72,7 @@ std::vector<ConsDays> getConsDays(const std::vector<Measurement>& measurements) 
 
   // Iterate over the average temperatures starting from the third day so we can can
   // now if the 
-  for (int i{2} ; i < int(avg_temp_day.size()) ; ++i) {
+  for (int i{2} ; i < n_len ; ++i) {
 
     current_date.day = days[i];
     current_date.month = months[i];
@@ -116,16 +123,38 @@ std::vector<ConsDays> getConsDays(const std::vector<Measurement>& measurements) 
     // have to restart and skip forward two days for the same reason as
     // previously
     else {
-      std::cout << "Something is funky..." << std::endl;
-      return res;
-      // previous_date.day = days[1];
-      // previous_date.month = months[1];
-      // previous_date.year = years[1];
-      // nondecreasing = (avg_temp_day[]);
-      // cons_days = 1;
-    }
-
+      // Missing measurments the day after the last so
+      // assume the streak ended and add it
+      ConsDays new_val;
+      new_val.nondecreasing = true;
+      new_val.cons_days = cons_days;
+      new_val.date = current_date;
     
+      res.push_back(new_val);
+
+      // Now we are in the same situation as the start where we have to
+      // skip over a day to know if it was increasing or decreasing so
+      // we start by making sure the two next days are following each other
+      while (!(isNextDay(current_date, previous_date))) {
+        previous_date = current_date;
+
+        // Check so that we do not go outside the vectors range
+        if (i+1 >= n_len) {
+          break;
+        }
+        else {
+          i += 1;
+          current_date.day = days[i];
+          current_date.month = months[i];
+          current_date.year = years[i];
+        }
+      }
+
+      // Now we should have two days that are following each other
+      // so we reset as we did in the start
+      nondecreasing = avg_temp_day[i] > avg_temp_day[i-1];
+      cons_days = 1;
+    }
 
     // Iterate the new date forward
     previous_date = current_date;
@@ -136,16 +165,86 @@ std::vector<ConsDays> getConsDays(const std::vector<Measurement>& measurements) 
 
 void plotConsDaysHist(const std::vector<Measurement>& measurements) {
   std::vector<ConsDays> res{getConsDays(measurements)};
-  TCanvas *c1 = new TCanvas("c1","c1");
+  TCanvas *c1 = new TCanvas("c1","");
   c1->cd();
-  TH1F* h1 = new TH1F("h1","Consecutive days of increasing/decreasing temperature", 19, 1., 20.);
+  double xmin{0.5};
+  double xmax{20.5};
+  int nbins{int(xmax-xmin)};
+
+  TH1F* h1 = new TH1F("h1","", nbins, xmin, xmax);
+  TH1F* h2 = new TH1F("h2","", nbins, xmin, xmax);
+
+  int min_year{10000};
+  int max_year{0};
 
   for (const auto &data_pts : res) {
-    h1->Fill(data_pts.cons_days);
+    if (data_pts.date.year > max_year) {
+      max_year = data_pts.date.year;
+    }
+    if (data_pts.date.year < min_year) {
+      min_year = data_pts.date.year;
+    }
+    if (data_pts.nondecreasing) {
+      h1->Fill(data_pts.cons_days);
+    }
+    else {
+      h2->Fill(data_pts.cons_days);
+    }
   }
-  // h1->Draw("HIST");
-  h1->Fit("expo","","",1,20);
-  h1->Draw();
+
+  TString hist_text{Form("#splitline{Consecutive days of nondecreasing/decreasing temperature}{between the years %d-%d}", min_year, max_year)};
+
+  h1->SetTitle(hist_text);
+  gPad->SetTopMargin(0.15);
+
+  TF1* fit1 = new TF1("fit1", "[0]*TMath::Power([1], x)", xmin, xmax);
+  fit1->SetParameters(h1->GetBinContent(1), 0.5);
+  TF1 *fit2 = (TF1*)fit1->Clone("fit2");
+  fit1->SetParameters(h1->GetBinContent(2), 0.5);
+
+  h1->Fit("fit1", "RN");
+  fit1->SetLineColor(kRed);
+  fit1->SetLineWidth(1);
+  fit1->SetLineStyle(2);
+  double a1{fit1->GetParameter("p0")};
+  double b1{fit1->GetParameter("p1")};
+  std::cout << "a = " << a1 << ", b = " << b1 << std::endl;
+  TString fit1_text{Form("Nondecreasing fit: %.0f#times %.2f^{x}", a1, b1)};
+
+  h2->Fit("fit2", "RN");
+  fit2->SetLineColor(kBlue);
+  fit2->SetLineWidth(1);
+  fit2->SetLineStyle(2);
+  double a2{fit2->GetParameter("p0")};
+  double b2{fit2->GetParameter("p1")};
+  std::cout << "a = " << a2 << ", b = " << b2 << std::endl;
+  TString fit2_text{Form("Decreasing fit: %.0f#times %.2f^{x}", a2, b2)};
+
+  gStyle->SetOptStat(0);
+
+  double max1 = h1->GetMaximum();
+  double max2 = h2->GetMaximum();
+  h1->SetMaximum(std::max(max1, max2) * 1.1);
+
+  h1->GetXaxis()->SetTitle("Consecutive days");
+  h1->GetYaxis()->SetTitle("Entries");
+  h1->SetLineColor(kRed);
+  h2->SetLineColor(kBlue);
+  h1->Draw("same");
+  h2->Draw("same");
+  fit1->Draw("same");
+  fit2->Draw("same");
+
+  h1->GetXaxis()->SetNdivisions(nbins);
+
+  auto legend = new TLegend(0.5, 0.65, 0.88, 0.82);
+  legend->AddEntry(h1,"Nondecreasing","l");
+  legend->AddEntry(fit1,fit1_text,"l");
+  legend->AddEntry(h2,"Decreasing","l");
+  legend->AddEntry(fit2, fit2_text,"l");
+  legend->SetTextSize(0.03);
+  legend->Draw();
+
   c1->SaveAs("results/cons_test.pdf");
 }
 

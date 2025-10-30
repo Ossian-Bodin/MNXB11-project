@@ -10,6 +10,7 @@
 #include "TGraph.h"
 #include "TLegend.h"
 #include "TLine.h"
+#include "TGaxis.h"
 
 #include "Ice_cream_analysis.h"
 
@@ -156,26 +157,63 @@ void plotTempVsSales(const std::vector<Measurement>& measurements, int startyear
     for (int i = 0; i < nBins; ++i)
     {
         tempHist->SetBinContent(i + 1, temp.avgTemps[i]);
-        salesHist->SetBinContent(i + 1, 0.1*iceCream.sales[i]); // may need offset bc |sales[i]| >> |temp[i]| (arb 0.1* for now)
+        salesHist->SetBinContent(i + 1, iceCream.sales[i]); // may need offset bc |sales[i]| >> |temp[i]| (arb 0.1* for now)
     }
+
+
 
     auto canv = new TCanvas("canv", "Monthly Temperature VS Ice cream sales", 1200, 600);
 
+    tempHist->SetStats(0); // remove stats box
+    salesHist->SetStats(0);
+
+    // main hist: tempHist
     tempHist->SetLineColor(kBlue);
     tempHist->SetFillColorAlpha(kBlue - 3, 0.3);
     tempHist->Draw("HIST");
 
     // set axes
     tempHist->GetXaxis()->SetTitle("Months from 1972-01 to 2020-01");
-    tempHist->GetYaxis()->SetTitle("Temperature");
+    tempHist->GetYaxis()->SetTitle("Temperature [#circC]"); 
     tempHist->GetXaxis()->CenterTitle();
     tempHist->GetYaxis()->CenterTitle();
 
-    
+    // create second pad for salesHist:
 
+    double leftMax = tempHist->GetMaximum();
+    double rightMax = 1.1 * salesHist->GetMaximum();
+
+    double scale = leftMax / rightMax;
+
+    
+    salesHist->Scale(scale);
     salesHist->SetLineColor(kRed);
     salesHist->SetFillColorAlpha(kRed - 3, 0.4);
     salesHist->Draw("HIST SAME");
+
+
+    canv->Update();
+    double xminPad = gPad->GetUxmax();
+    double yZero = 0.0; // start sales axis at y = 0 baseline
+    double ymaxPad = tempHist->GetMaximum();
+
+    // add second y-axis (sales)
+    TGaxis* axis = new TGaxis(xminPad, yZero,
+                              xminPad, ymaxPad,
+                              0, rightMax, 510, "+L"); // (?)
+
+    axis->SetLineColor(kRed);
+    axis->SetLabelColor(kRed);
+    axis->SetTitleColor(kRed);
+    axis->SetTitle("Ice Cream Sales");
+    axis->CenterTitle(true);
+
+    axis->SetLabelSize(tempHist->GetYaxis()->GetLabelSize());
+    axis->SetTitleSize(tempHist->GetYaxis()->GetTitleSize());
+    axis->SetLabelFont(tempHist->GetYaxis()->GetLabelFont());
+    axis->SetTitleFont(tempHist->GetYaxis()->GetTitleFont());
+
+    axis->Draw();
 
     
 
@@ -187,6 +225,13 @@ void plotTempVsSales(const std::vector<Measurement>& measurements, int startyear
     line->SetLineColor(kBlack);
     line->SetLineWidth(2);
     line->Draw("SAME"); 
+
+
+    // legend
+    auto legend = new TLegend(0.75, 0.75, 0.9, 0.9);
+    legend->AddEntry(tempHist, "Average monthly temperature", "f");
+    legend->AddEntry(salesHist, "Monthly ice cream sales", "f");
+    legend->Draw();
 
     canv->SaveAs("results/temp_vs_sales_test.png");
     canv->SaveAs("results/temp_vs_sales_test.root");

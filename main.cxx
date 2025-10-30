@@ -93,8 +93,9 @@ int main(int argc, char *argv[]) {
       break;
     case 3:
       std::cout << "Running a third analysis" << std::endl;
+      persist_measurements(measurements, output_file);
       analysis3(output_file);
-      
+
       break;
     case 4:
       std::cout << "Running a fourth analysis" << std::endl;

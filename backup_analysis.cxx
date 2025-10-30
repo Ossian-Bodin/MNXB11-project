@@ -27,22 +27,15 @@ void analysis3(const std::string& filename) {
 
     auto *c3 = new TCanvas("Canvas", "Canvas");
     c3->cd();
+    TH2D* dailyMaxHist = new TH2D("dailyMaxHist", "dailyMaxHist", 365, 1, 366, 20, -30, 30);
+    TH2D* dailyMaxHist2 = new TH2D("dailyMaxHist2", "dailyMaxHist", 365, 1, 366, 20, -30, 30);
 
-    TH1D* h1 = new TH1D("h1", "dailyMaxHist", 365, 1, 366);
-    TH1D* h2 = new TH1D("h2", "dailyMaxHist", 365, 1, 366);
-
-    TH1D* dailyMaxHist = new TH1D("dailyMaxHist", "dailyMaxHist", 365, 1, 366);
-    TH1D* dailyMaxHist2 = new TH1D("dailyMaxHist2", "dailyMaxHist", 365, 1, 366);
-
-    int this_year{1890};
+    int this_year{2010};
     double maxTemp{-50};
     double minTemp{50};
-    int hottestDay{1};
-    int coldestDay{1};
     int currentDay{1};
     int histogramDay{1};
     // int currentMonth{1};
-
 
     // Goes up from the first year and stops when the year is 2010
     while (reader.Next()) {
@@ -52,22 +45,19 @@ void analysis3(const std::string& filename) {
         }
     }
 
-    while(reader.Next()) {
-        if (*year != this_year) {
-            dailyMaxHist->Fill(hottestDay);
-            dailyMaxHist2->Fill(coldestDay);
-
-            h1->SetBinContent(hottestDay, maxTemp);
-            h2->SetBinContent(coldestDay, std::abs(minTemp));
-
-            this_year += 1;
+    //The code goes here
+    while (reader.Next()) {
+        if (*year == this_year+1) {
+            break;
+        }
+        maxTemp = std::max(maxTemp, *temp);
+        minTemp = std::min(minTemp, *temp);
+        if (*day != currentDay) {
+            // Skriv in värdet i histogrammet
+            dailyMaxHist->Fill(histogramDay, maxTemp);
+            dailyMaxHist2->Fill(histogramDay, minTemp);
             maxTemp = -50;
             minTemp = 50;
-            currentDay = 1;
-            histogramDay = 1;
-        }
-
-        if (*day != currentDay) {
             if (*day > currentDay) {
                 currentDay += 1;
                 histogramDay += 1;
@@ -76,39 +66,22 @@ void analysis3(const std::string& filename) {
                 currentDay = 1;
                 histogramDay += 1;
             }
-        }        
 
-        if (*temp > maxTemp) {
-            maxTemp = *temp;
-            hottestDay = histogramDay;
-        }
 
-        if (*temp < minTemp) {
-            minTemp = *temp;
-            coldestDay = histogramDay;
         }
     }
 
-    // dailyMaxHist->SetFillColor(kRed);
-    // dailyMaxHist->SetLineColor(kRed);
-    
-    // dailyMaxHist2->SetFillColor(kBlue);
-    // dailyMaxHist2->SetLineColor(kBlue); 
-
-    // dailyMaxHist->Draw();
-    // dailyMaxHist2->Draw("SAME");
-
-    h1->SetFillColor(kRed);
-    h2->SetFillColor(kBlue);
-
-    h1->SetLineColor(kRed); 
-    h2->SetLineColor(kBlue); 
-
-    h1->Draw();
-    h2->Draw("SAME");
-
+    dailyMaxHist->SetMarkerColor(kRed);
+    dailyMaxHist->SetMarkerStyle(20);
+    dailyMaxHist2->SetMarkerColor(kBlue);
+    dailyMaxHist2->SetMarkerStyle(21);
+    dailyMaxHist->Draw();
+    dailyMaxHist2->Draw("SAME");
     c3->SaveAs("results/MY_histogram.pdf");
+
+
 }
+
 
 
 

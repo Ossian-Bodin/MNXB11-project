@@ -74,6 +74,8 @@ int main(int argc, char *argv[]) {
     input_file = clean_data(input_file);
   }
 
+  std::cout << input_file << std::endl;
+
   std::string output_directory{fs::path(output_file).parent_path()};
 
   if (!fs::is_directory(output_directory) || !fs::exists(output_directory)) {

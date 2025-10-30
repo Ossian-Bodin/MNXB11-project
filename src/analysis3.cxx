@@ -8,9 +8,7 @@
 #include <TTreeReaderValue.h>
 #include <iostream>
 
-
 void analysis3(const std::string& filename) {
-
     auto file = TFile::Open(filename.c_str(), "READ");
     TTree* tree = (TTree*)file->Get("weatherdata");
 
@@ -18,12 +16,7 @@ void analysis3(const std::string& filename) {
     TTreeReaderValue<int> year{reader, "year"};
     TTreeReaderValue<int> month{reader, "month"};
     TTreeReaderValue<int> day{reader, "day"};
-    TTreeReaderValue<int> hour{reader, "hour"};
-    TTreeReaderValue<int> minute{reader, "minute"};
-    TTreeReaderValue<int> second{reader, "second"};
     TTreeReaderValue<double> temp{reader, "temp"};
-    TTreeReaderValue<std::string> quality{reader, "quality"};
-
 
     auto *c3 = new TCanvas("Canvas", "Canvas");
     c3->cd();
@@ -34,23 +27,19 @@ void analysis3(const std::string& filename) {
     TH1D* dailyMaxHist = new TH1D("dailyMaxHist", "dailyMaxHist", 365, 1, 366);
     TH1D* dailyMaxHist2 = new TH1D("dailyMaxHist2", "dailyMaxHist", 365, 1, 366);
 
-    int this_year{1890};
+    reader.Next();
+    int this_year{*year};
+    reader.Restart();
+
     double maxTemp{-50};
     double minTemp{50};
     int hottestDay{1};
     int coldestDay{1};
     int currentDay{1};
     int histogramDay{1};
-    // int currentMonth{1};
 
 
-    // Goes up from the first year and stops when the year is 2010
-    while (reader.Next()) {
-        if (*year == this_year) {
-            std::cout << "The year is now set to " << *year << std::endl;
-            break;
-        }
-    }
+    std::cout << "The year is now set to " << this_year << std::endl;
 
     while(reader.Next()) {
         if (*year != this_year) {
@@ -89,23 +78,23 @@ void analysis3(const std::string& filename) {
         }
     }
 
-    // dailyMaxHist->SetFillColor(kRed);
-    // dailyMaxHist->SetLineColor(kRed);
+    dailyMaxHist->SetFillColor(kRed);
+    dailyMaxHist->SetLineColor(kRed);
     
-    // dailyMaxHist2->SetFillColor(kBlue);
-    // dailyMaxHist2->SetLineColor(kBlue); 
+    dailyMaxHist2->SetFillColor(kBlue);
+    dailyMaxHist2->SetLineColor(kBlue); 
 
-    // dailyMaxHist->Draw();
-    // dailyMaxHist2->Draw("SAME");
+    dailyMaxHist->Draw();
+    dailyMaxHist2->Draw("SAME");
 
-    h1->SetFillColor(kRed);
-    h2->SetFillColor(kBlue);
+    // h1->SetFillColor(kRed);
+    // h2->SetFillColor(kBlue);
 
-    h1->SetLineColor(kRed); 
-    h2->SetLineColor(kBlue); 
+    // h1->SetLineColor(kRed); 
+    // h2->SetLineColor(kBlue); 
 
-    h1->Draw();
-    h2->Draw("SAME");
+    // h1->Draw();
+    // h2->Draw("SAME");
 
     c3->SaveAs("results/MY_histogram.pdf");
 }

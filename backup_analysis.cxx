@@ -1,85 +1,61 @@
+
 #include "analysis3.h"
 #include "Measurement.h"
 #include <TFile.h>
-#include <TH2D.h>
-#include <TCanvas.h>
-#include <TGraph.h>
+#include <TTree.h>
 #include <TTreeReader.h>
 #include <TTreeReaderValue.h>
+#include <TH2D.h>
+#include <TCanvas.h>
+#include <TStyle.h>
 #include <iostream>
-
+#include <map>
+#include <TColor.h>
 
 void analysis3(const std::string& filename) {
-
     auto file = TFile::Open(filename.c_str(), "READ");
     TTree* tree = (TTree*)file->Get("weatherdata");
 
     TTreeReader reader{tree};
     TTreeReaderValue<int> year{reader, "year"};
     TTreeReaderValue<int> month{reader, "month"};
-    TTreeReaderValue<int> day{reader, "day"};
-    TTreeReaderValue<int> hour{reader, "hour"};
-    TTreeReaderValue<int> minute{reader, "minute"};
-    TTreeReaderValue<int> second{reader, "second"};
     TTreeReaderValue<double> temp{reader, "temp"};
-    TTreeReaderValue<std::string> quality{reader, "quality"};
 
+    int startYear = 1950;
+    int endYear   = 2020;
 
-    auto *c3 = new TCanvas("Canvas", "Canvas");
-    c3->cd();
-    TH2D* dailyMaxHist = new TH2D("dailyMaxHist", "dailyMaxHist", 365, 1, 366, 20, -30, 30);
-    TH2D* dailyMaxHist2 = new TH2D("dailyMaxHist2", "dailyMaxHist", 365, 1, 366, 20, -30, 30);
+    // Histogram: X = month (1–12), Y = year, Z = mean temperature
+    TH2D* heatmapMean = new TH2D("heatmapMean", "Mean Monthly Temperature;Month;Year;Temperature (°C)", 12, 0.5, 12.5, endYear-startYear+1, startYear-0.5, endYear+0.5);
 
-    int this_year{2010};
-    double maxTemp{-50};
-    double minTemp{50};
-    int currentDay{1};
-    int histogramDay{1};
-    // int currentMonth{1};
+    // Map to accumulate sum and count for each (year, month)
+    std::map<std::pair<int,int>, std::pair<double,int>> tempData; 
+    // key = (year, month), value = (sumTemp, count)
 
-    // Goes up from the first year and stops when the year is 2010
     while (reader.Next()) {
-        if (*year == this_year) {
-            std::cout << "The year is now set to " << *year << std::endl;
-            break;
+        auto key = std::make_pair(*year, *month);
+        if (tempData.find(key) == tempData.end()) {
+            tempData[key] = std::make_pair(*temp, 1);
+        } else {
+            tempData[key].first  += *temp;
+            tempData[key].second += 1;
         }
     }
 
-    //The code goes here
-    while (reader.Next()) {
-        if (*year == this_year+1) {
-            break;
-        }
-        maxTemp = std::max(maxTemp, *temp);
-        minTemp = std::min(minTemp, *temp);
-        if (*day != currentDay) {
-            // Skriv in värdet i histogrammet
-            dailyMaxHist->Fill(histogramDay, maxTemp);
-            dailyMaxHist2->Fill(histogramDay, minTemp);
-            maxTemp = -50;
-            minTemp = 50;
-            if (*day > currentDay) {
-                currentDay += 1;
-                histogramDay += 1;
-            }
-            else {
-                currentDay = 1;
-                histogramDay += 1;
-            }
-
-
-        }
+    // Fill histogram with mean temperatures
+    for (auto& entry : tempData) {
+        int y = entry.first.first;    // year
+        int m = entry.first.second;   // month
+        double meanTemp = entry.second.first / entry.second.second;
+        heatmapMean->Fill(m, y, meanTemp);
     }
 
-    dailyMaxHist->SetMarkerColor(kRed);
-    dailyMaxHist->SetMarkerStyle(20);
-    dailyMaxHist2->SetMarkerColor(kBlue);
-    dailyMaxHist2->SetMarkerStyle(21);
-    dailyMaxHist->Draw();
-    dailyMaxHist2->Draw("SAME");
-    c3->SaveAs("results/MY_histogram.pdf");
+    // Draw
+    TCanvas* c = new TCanvas("c", "Mean Monthly Temperature Heatmap", 1200, 600);
 
+    heatmapMean->Draw("COLZ");
+    c->SaveAs("results/heatmapMean.pdf");
 
+    std::cout << "Heatmap saved to results/heatmapMean.pdf" << std::endl;
 }
 
 

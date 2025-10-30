@@ -31,22 +31,24 @@
 
 	Finished Analysis2.cxx partially
 
-	* Most important part was getting everything on the page first, this is a draft essentially.
-	* I asked Chat GPT to look over my code because I was not sure if wrote the code to show me what I want
-	* Editing will come later (though I spent several hours on this so far ahhhhhhgg!!!)
+	* Most important part was getting everything on the page first, this is a draft.
+	* I asked Chat GPT to look over my code because I was not sure if what i wrote was accurate for my end goal
+	* Editing will come later, spent several hours on this so far. Tabled for next day.
 
 2025-10-26 Emma Krvaric <emma.krvaric.1546@student.lu.se>
 
-	Did a final look-over Analysis2.cxx
+	Look-over Analysis2.cxx
 
-	* Hopefully finished everything (not including main.cxx or my latex report)
+	* Hopefully finished everything (not including main.cxx link or my latex report)
 	* Compiled it to test if it works (it does)
-	* Altered visual aesthetics of histogram to personalize it
-	* realized i used absolute paths by mistake for testing, had to fix it
+	* Customized my histogram
+	* Had to fix paths
 
-2025-10-29 Emma Krvaric <emma.krvaric.1546@student.lu.se>
+2025-10-30 Emma Krvaric <emma.krvaric.1546@student.lu.se>
 
-	Asked teammates to look over my histogram code and began LATEX report
+	Final edits before turn-in!
 
-	* Histogram wasnt doing want I wanted when I printed out the graph, I played with it to see if I could fix it.
-	* I began my .tex report for Analysis2, with help from my group, I am not familiar with Latex...
+	* Renamed almost all variables for clarity for outside readers
+	* Changed my output file to update instead of recreate
+	* Started my portion of the report in overleaf
+	* Decided to keep all of my notes, might delete once report is finished.

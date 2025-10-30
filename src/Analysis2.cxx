@@ -11,6 +11,7 @@
 
 #include <cmath>
 #include <numeric>
+#include <map>
 #include <iostream>
 #include <string>
 #include <filesystem>
@@ -40,20 +41,20 @@ int calc_day_num(int year, int month, int day) {
     int dayofyear = days_before_month[month - 1] + day;
 
     /*leapyr
-    - divisible by 4? if yes, a leap year.
+    - divisible by 4
     - if divisble by 100, may NOT be a leap year unless ALSO divisible by 400
-    - years that are divisible by 4, or divisible by 400, are leap years
-    - but if divisible by 100, but NOT 400, its not a leap year */
+    - divisible by 4 divisible by 400, are leap years
+    - if divisible by 100, but NOT 400, its not a leap year*/
     bool is_leap = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
     if (is_leap && month > 2) ++dayofyear;
     return dayofyear;
 
     //if it IS INDEED A LEAP YEAR:
-    //any month agter february has to be given +1 day value because there is now 366 days and not 365
+    //months agter february has to be given +1 day value because there is now 366 days and not 365
 }
 
 //-----------------------------------------------------------------------------------------
-//THIS IS MY ACTUAL FUNCTION THAT INCLUDES EVERYTHING NEEDED TO RUN MY PART OF THE PROJECT!
+//FUNCTION TO RUN MY PART OF THE PROJECT :)
 //-----------------------------------------------------------------------------------------
 void analysis2(const std::vector<Measurement>& data, const std::string& output_filename){
 //vector cant be changed passed by reference not copy
@@ -62,7 +63,7 @@ void analysis2(const std::vector<Measurement>& data, const std::string& output_f
 
 //2) group temperature by day of the year
 //The suggested outline for my code was to use a map
-//I am not familiar with a map so i thought now was a good time to learn :D
+//I am not familiar with a map so i thought now was a good time to learn
 //can handle if data is missing or out of order
 
 std::map<int, std::vector<double>> tempsonday;
@@ -83,7 +84,7 @@ TH1F* AvgTemp = new TH1F("AvgTemp", "Mean Daily Temperature (February 1 2005 - F
 //4) get mean temperature and get standard deviation for every day
 //also fill the histogram with data using fill template
 
-//ROOT has stuff for this, I used TMath header
+//ROOT has stuff for this, TMath header
 
 for (int day = 1; day <= nDays; ++day) {
         auto dailydata = tempsonday.find(day);
@@ -108,7 +109,7 @@ AvgTemp->GetXaxis()->CenterTitle(true);
 AvgTemp->GetYaxis()->CenterTitle(true);
 //readability and legibility
 AvgTemp->GetYaxis()->SetRangeUser(-15,25); //temperature -15 to 25
-AvgTemp->GetXaxis()->SetNdivisions(36, kFALSE);
+AvgTemp->GetXaxis()->SetNdivisions();
 //give month names while keeping day of year functionality 
 //do beginning of the month for clarity?
 //got the values for the bin i want to label from chat
@@ -132,7 +133,6 @@ AvgTemp->Draw("HIST"); //make line first
 AvgTemp->SetLineColorAlpha(kViolet - 2, 0.5);//slightly transparent to improve readability
 AvgTemp->Draw("E SAME"); //make error bars
 analysis2canvas->Update();
-//c1->SaveAs("results/Analysis2_histogram.png"); //save for latex use
 
 // Determine output directory
 //asked chat gpt for assistance because i was so confused why there was no saved files outputted
@@ -145,14 +145,14 @@ if (outDir.empty()) outDir = ".";
 if (!std::filesystem::exists(outDir)) std::filesystem::create_directories(outDir);
 
 // Save path for latex use (not sure if i need that but chat said it was a good idea to have that as well, so I saved it as a png)
-std::filesystem::path png_file = outDir / "Analysis2_Histogram.png";
-analysis2canvas->SaveAs(png_file.c_str());
+std::filesystem::path pdf_file = outDir / "Analysis2_Histogram.pdf";
+analysis2canvas->SaveAs(pdf_file.c_str());
 
 TFile outFile(output_filename.c_str(), "UPDATE"); //changed to UPDATE because we want 1 file with all analyses
 AvgTemp->Write();
 outFile.Close();
 
-std::cout << "Saved Histogram for Analysis 2 as png (for latex) and to ROOT file" << '\n';
+std::cout << "Saved Histogram for Analysis 2 as pdf (for latex) and to ROOT file" << '\n';
 }
 
 //the end!! 

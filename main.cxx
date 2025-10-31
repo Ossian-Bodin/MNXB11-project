@@ -4,12 +4,13 @@
 #include "DataExtraction.h"
 #include "meanTemp.h"
 #include "ConsDays.h"
+#include "Ice_cream_analysis.h"
+#include "Analysis2.h"
 
 #include <iostream>
 #include <string>
 #include <filesystem>
 
-#include "Ice_cream_analysis.h"
 
 namespace fs = std::filesystem;
 
@@ -97,8 +98,8 @@ int main(int argc, char *argv[]) {
       break;
     }
     case 1: {
-      std::cout << "Running a first analysis" << std::endl;
-      // some_analysis(measurements, output_file);
+      std::cout << "Running mean daily temperature" << std::endl;
+      analysis2(measurements, output_file);
       break;
     }
     case 2: {
@@ -128,6 +129,7 @@ int main(int argc, char *argv[]) {
     }
     case 6:
       std::cout << "Running all analyzes!" << std::endl;
+      analysis2(measurements, output_file);
       auto res{ConsecutiveDays::getConsDays(measurements)};
       ConsecutiveDays::plotConsDaysHist(res);
       std::cout << "Persisting raw measurement data to file " << output_file

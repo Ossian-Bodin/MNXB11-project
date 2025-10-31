@@ -3,6 +3,7 @@
 // NOTE: copying git log over this file is NOT a ChangeLog! See this: <https://www.gnu.org/prep/standards/html_node/Change-Logs.html>
 // Changelog is a summary of a lot of related commits.
 
+# ChangeLog
 
 2025-10-31 Axel Cerne <ax4888ce-s@student.lu.se>
 
@@ -96,3 +97,53 @@
 
 	Commits on Oct 30, 2025:
 		*Added fit to data
+
+
+2025-10-22 Emma Krvaric  <emma.krvaric.1546@student.lu.se>
+
+	Met with group and determined my own personal workplan.
+
+	* Approved workplan.md stating that I would be responsible for Analysis 2
+	* Created my own notes to determine my own workflow
+
+2025-10-23 Emma Krvaric <emma.krvaric.1546@student.lu.se>
+
+	Group meeting #2, actually started work on Analysis 2.
+
+	* Chose the data I wanted to analyze (Uppsala)
+	* Cleaned the data using Ossian's and Hugo's code
+
+2025-10-24 Emma Krvaric <emma.krvaric.1546@student.lu.se>
+
+	Created first rough draft of Analysis2.cxx and Analysis2.h
+
+	* Created both files and drafted out my steps in comments
+	* Full disclosure: I asked ChatGPT for what the steps will look like, as I was completely lost. These steps are listed as numbered notes in my .cxx. and I referred to the github demo for extra help.
+	* Completed header file, but my source is still a work in progress.
+
+2025-10-25 Emma Krvaric <emma.krvaric.1546@student.lu.se>
+
+	Finished Analysis2.cxx partially
+
+	* Most important part was getting everything on the page first, this is a draft.
+	* I asked Chat GPT to look over my code because I was not sure if what i wrote was accurate for my end goal
+	* Editing will come later, spent several hours on this so far. Tabled for next day.
+
+2025-10-26 Emma Krvaric <emma.krvaric.1546@student.lu.se>
+
+	Look-over Analysis2.cxx
+
+	* Hopefully finished everything (not including main.cxx link or my latex report)
+	* Compiled it to test if it works (it does)
+	* Customized my histogram
+	* Had to fix paths?
+
+2025-10-30 Emma Krvaric <emma.krvaric.1546@student.lu.se>
+
+	Final edits before turn-in!
+
+	* Renamed almost all variables for clarity for outside readers?
+	* Changed my output file to update instead of recreate for 1 neat group file
+	* Started my portion of the report in overleaf
+	* Tried to make my code less clunky? I think it is still really inefficient but i dont know what i would change
+	* Decided to keep all of my notes, might delete once report is finished, but they reflect my thought process

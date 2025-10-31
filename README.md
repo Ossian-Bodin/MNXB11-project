@@ -68,16 +68,16 @@ make -j4 install # To use four cores
 
 ## Analyses
 
-### 5 Ice Cream Analysis
-To be able to run the analysis, unzip the /datasets/ice_cream.tgz by the following command:
+### 5. Ice Cream Analysis
+To be able to run the analysis, unzip the `/datasets/ice_cream_dataset.tgz` by running the following command from root directory:
 
-  tar -xvzf ./datasets/ice_cream.tgz
+  `tar -xvzf ./datasets/ice_cream_dataset.tgz -C ./datasets`
 
 To run the analysis use the following executable call:
 
-  ./main -i \<SMHI datafile path\> -a 5
+  `./main -i \<SMHI datafile path\> -a 5`
 
-Produces a plot (under /results) of monthly ice cream sales (IPN) and average monthly temperature recorded in the corresponding SMHI location. 
+Produces a plot (under `/results`) of monthly ice cream sales (IPN) and average monthly temperature recorded in the corresponding SMHI location. 
 
 Note that the ice cream data set only covers years 1972-2019 (+ 2020 jan). Therefore, calling plotTempVsSales outside the scope startyear=1972 and stopyear=2019 will not work. 
 Ideally stopyear=2020 should work, since we plot on a monthly basis, but the edge case bug is still eluding me.

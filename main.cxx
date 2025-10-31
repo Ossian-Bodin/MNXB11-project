@@ -3,6 +3,7 @@
 // #include "Analysis.h"
 #include "DataExtraction.h"
 #include "meanTemp.h"
+#include "ConsDays.h"
 
 #include <iostream>
 #include <string>
@@ -53,9 +54,9 @@ int main(int argc, char *argv[]) {
   analysis_choice_parameter.help(
       "Choose which of the project's steps to run: 0 -> Run data extraction "
       "only and persist the raw data, 1 -> Run analysis 1 (),"
-      " 2 -> Run analysis 2 () -> Run analysis 3 (),"
-      " 4 -> Run analysis 4 () , 5 -> Run analysis 5 (),"
-      "6 -> Run all five analyses");
+      " 2 -> Run consecutive day analysis () -> Run analysis 3 (),"
+      " 4 -> Run yearly mean temperature analysis , 5 -> Run ice cream sales analysis, "
+      "6 -> Run all five analyses.");
   
   // Create a third parameter that lets the user specify the output file (not required)
   std::string output_file{};
@@ -87,51 +88,58 @@ int main(int argc, char *argv[]) {
   std::cout << "Running data extraction!" << std::endl;
   const auto measurements{read_measurements(input_file)};
   switch (analysis_choice) {
-    case 0:
+    case 0: {
       std::cout << "Persisting raw measurement data to file " << output_file
                 << std::endl;
       persist_measurements(measurements, output_file);
       break;
-    case 1:
+    }
+    case 1: {
       std::cout << "Running a first analysis" << std::endl;
       // some_analysis(measurements, output_file);
       break;
-    case 2:
-      std::cout << "Running a second analysis" << std::endl;
-      // some_other_analysis(measurements, output_file);
+    }
+    case 2: {
+      std::cout << "Running the consecutive days analysis" << std::endl;
+      auto res{ConsecutiveDays::getConsDays(measurements)};
+      ConsecutiveDays::plotConsDaysHist(res);
       break;
-    case 3:
+    }
+    case 3: {
       std::cout << "Running a third analysis" << std::endl;
       // some_other_analysis(measurements, output_file);
       break;
-    case 4:
-      std::cout << "Running a fourth analysis" << std::endl;
+    }
+    case 4: {
+      std::cout << "Running yearly mean temperature analysis" << std::endl;
       std::cout << "Persisting raw measurement data to file " << output_file
                 << std::endl;
       persist_measurements(measurements, output_file);
       tempReader("results/output.root");
-      // some_other_analysis(measurements, output_file);
       break;
     
     
     case 5:
     {
-      // ice cream sales vs average monthly temperature
-        plotTempVsSales(measurements, 1972, 2019); // note: 2020 doesn't seem to work, still alignment issues?
-
+      std::cout << "Running ice cream sales analysis" << std::endl;
+      plotTempVsSales(measurements, 1972, 2019); // note: 2020 doesn't seem to work, still alignment issues?
       break;
     }
 
     case 6:
       std::cout << "Running all analyzes!" << std::endl;
-      // some_analysis(measurements, output_file);
-      // some_other_analysis(measurements, output_file);
+      std::cout << "Persisting raw measurement data to file " << output_file
+                << std::endl;
+      persist_measurements(measurements, output_file);
+      tempReader("results/output.root");
       break;
-    default:
+    }
+    default: {
       // We got an invalid analysis choice
       std::cerr << "Analysis choice must be one of either 0, 1, 2, 3, 5, or 6"
                 << std::endl;
       std::exit(2);
+    }
   }
 
 

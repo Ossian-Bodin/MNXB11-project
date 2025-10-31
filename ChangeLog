@@ -45,4 +45,44 @@
 * Created a class called Measurement which can store the measurements from the datafiles, along with Get-functions to access them. Created two functions. One called read_measurements for filling a vector of the object type Measurement with all data from the datafiles. The other function, persist_measurements, takes the vector of object type Measurement and creates a TTree with branches filled with data, which can later be used in analysis.
 
 
+2025-10-30 Ossian Bodin  <ossianbodin28@gmail.com>
 
+2025-10-30
+
+	Consecutive days analysis plotting
+
+	* Added a function that plots number of consecutive days in ROOT
+
+2025-10-29
+
+	Consecutive days analysis
+
+	* Created the basic structure of the consecutive days analysis
+
+2025-10-26
+
+	Minor bug fix in`datacleaner.py
+
+	* datacleaner.py now returns 0 if succesful so it can be checked in C++
+
+2025-10-23
+
+	Makefile, README changes and clean_data function
+
+	* Created a basic makefile that links to required libraries
+	* Added instructions on how to install the CLI parser argumentum in the README
+	* Added function that automatically calls the cleaner script if one inputs an uncleaned data set
+
+2025-10-22
+
+	Data extraction/reading and CLI interface
+
+	* Merged data extraction and reading functionality from Hugo Henriksson
+	* Fixed syntax errors in the above mentioned code
+	* Added CLI parser functionality to the main file
+
+2025-10-21
+
+	Data cleaning of weather data sets
+
+	* Added a python script datacleaner.py that cleans the data

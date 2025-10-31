@@ -146,7 +146,7 @@ if (outDir.empty()) outDir = ".";
 if (!std::filesystem::exists(outDir)) std::filesystem::create_directories(outDir);
 
 // Save path for latex use (not sure if i need that but chat said it was a good idea to have that as well, so I saved it as a png)
-std::filesystem::path pdf_file = outDir / "Analysis2_Histogram.pdf";
+std::filesystem::path pdf_file = outDir / "MeanDailyTemperature.pdf";
 analysis2canvas->SaveAs(pdf_file.c_str());
 
 TFile outFile(output_filename.c_str(), "UPDATE"); //changed to UPDATE because we want 1 file with all analyses

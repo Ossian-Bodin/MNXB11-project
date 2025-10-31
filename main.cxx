@@ -108,10 +108,9 @@ int main(int argc, char *argv[]) {
       break;
     }
     case 3: {
-      std::cout << "Running a third analysis" << std::endl;
+      std::cout << "Running hottest/coldest day analysis" << std::endl;
       persist_measurements(measurements, output_file);
       analysis3(output_file);
-
       break;
     }
     case 4: {
@@ -134,6 +133,7 @@ int main(int argc, char *argv[]) {
       std::cout << "Persisting raw measurement data to file " << output_file
                 << std::endl;
       persist_measurements(measurements, output_file);
+      analysis3(output_file);
       tempReader("results/output.root");
       plotTempVsSales(measurements, 1972, 2019);
       break;

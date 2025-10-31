@@ -2,6 +2,7 @@
 
 // #include "Analysis.h"
 #include "DataExtraction.h"
+#include "meanTemp.h"
 #include "ConsDays.h"
 
 #include <iostream>
@@ -112,6 +113,10 @@ int main(int argc, char *argv[]) {
     }
     case 4: {
       std::cout << "Running a fourth analysis" << std::endl;
+      std::cout << "Persisting raw measurement data to file " << output_file
+                << std::endl;
+      persist_measurements(measurements, output_file);
+      tempReader("results/output.root");
       // some_other_analysis(measurements, output_file);
       break;
     }
@@ -133,6 +138,7 @@ int main(int argc, char *argv[]) {
       std::exit(2);
     }
   }
+
 
 
   return 0;

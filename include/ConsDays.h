@@ -3,6 +3,9 @@
 
 #include <vector>
 
+
+namespace ConsecutiveDays {
+
 struct Date {
   int day;
   int month;
@@ -30,5 +33,7 @@ bool isLeapYear(int year);
 int getDaysPerMonth(int month);
 
 bool isNextDay(Date current_date, Date previous_date);
+
+}
 
 #endif /* CONS_DAYS_h */

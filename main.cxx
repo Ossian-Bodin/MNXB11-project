@@ -97,12 +97,12 @@ int main(int argc, char *argv[]) {
       break;
     }
     case 2: {
-      std::cout << "Running a second analysis" << std::endl;
+      std::cout << "Running the consecutive days analysis" << std::endl;
 
-      auto res{getConsDays(measurements)};
+      auto res{ConsecutiveDays::getConsDays(measurements)};
 
-      plotConsDaysHist(res);
-
+      ConsecutiveDays::plotConsDaysHist(res);
+      
       break;
     }
     case 3: {

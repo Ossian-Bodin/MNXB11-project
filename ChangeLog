@@ -3,28 +3,45 @@
 // NOTE: copying git log over this file is NOT a ChangeLog! See this: <https://www.gnu.org/prep/standards/html_node/Change-Logs.html>
 // Changelog is a summary of a lot of related commits.
 
-# Template: 
+# Change log: 
 
-YYYY-MM-DD Name LastName  <email@somewhere>
+2025-10-21 Ossian Bodin  <ossianbodin28@gmail.com>
 
-	High Level description of work done
+	Data cleaning of weather data sets
 
-	* Fine grained description of important things that you want to communicate
-	* Fine grained description of important things that you want to communicate
+	* Added a python script datacleaner.py that cleans the data
 
 
-# Example (entries from newest to oldest):
+2025-10-22 Ossian Bodin  <ossianbodin28@gmail.com>
 
-2025-09-26 Florido Paganelli  <florido.paganelli@fysik.lu.se>
+	Data extraction/reading and CLI interface
 
-	Reviewing content of project template
+	* Merged data extraction and reading functionality from Hugo Henriksson
+	* Fixed syntax errors in the above mentioned code
+	* Added CLI parser functionality to the main file
 
-	* Added ChangeLog.txt with comments and examples
+2025-10-23 Ossian Bodin  <ossianbodin28@gmail.com>
 
-2025-09-25 Florido Paganelli  <florido.paganelli@fysik.lu.se>
+	Makefile, README changes and clean_data function
 
-	Reviewing content of project template
+	* Created a basic makefile that links to required libraries
+	* Added instructions on how to install the CLI parser argumentum in the README
+	* Added function that automatically calls the cleaner script if one inputs an uncleaned data set
 
-	* Checking directory structure
-	* Added Workplan.md
+2025-10-26 Ossian Bodin  <ossianbodin28@gmail.com>
 
+	Minor bug fix in`datacleaner.py
+
+	* datacleaner.py now returns 0 if succesful so it can be checked in C++
+
+2025-10-29 Ossian Bodin  <ossianbodin28@gmail.com>
+
+	Consecutive days analysis
+
+	* Created the basic structure of the consecutive days analysis
+
+2025-10-30 Ossian Bodin  <ossianbodin28@gmail.com>
+
+	Consecutive days analysis plotting
+
+	* Added a function that plots number of consecutive days in ROOT

@@ -10,8 +10,13 @@
 #include "DataExtraction.h"
 #include "ConsDays.h"
 
+namespace ConsecutiveDays {
 
 std::vector<ConsDays> getConsDays(const std::vector<Measurement>& measurements) {
+  // TODO: There is a bug where consecutive days of 1 are being added
+  // to the final data set and very long streaks above 50 days
+
+
   // Calculate the average temperature of each day with measurements and save the date
   std::vector<double> avg_temp_day;
   std::vector<int> days;
@@ -58,7 +63,7 @@ std::vector<ConsDays> getConsDays(const std::vector<Measurement>& measurements) 
 
   int n_len{int(avg_temp_day.size())};
 
-  int cons_days{1};
+  int cons_days{2};
 
   // We start from second measurement day because we cannot know if 
   // temperature increased or decreased from the day before the 
@@ -105,7 +110,6 @@ std::vector<ConsDays> getConsDays(const std::vector<Measurement>& measurements) 
       }
       else {
         if (nondecreasing) {
-
           ConsDays new_val;
           new_val.nondecreasing = true;
           new_val.cons_days = cons_days;
@@ -126,13 +130,18 @@ std::vector<ConsDays> getConsDays(const std::vector<Measurement>& measurements) 
     // previously
     else {
       // Missing measurments the day after the last so
-      // assume the streak ended and add it
-      ConsDays new_val;
-      new_val.nondecreasing = nondecreasing;
-      new_val.cons_days = cons_days;
-      new_val.date = current_date;
-    
-      res.push_back(new_val);
+      // assume the streak ended but make sure it is 
+      // longer than one otherwise days where it changed
+      // but have a missing day after may be added
+      if (cons_days > 1) {
+        ConsDays new_val;
+        new_val.nondecreasing = nondecreasing;
+        new_val.cons_days = cons_days;
+        new_val.date = current_date;
+      
+        res.push_back(new_val);
+      }
+
 
       // Now we are in the same situation as the start where we have to
       // skip over a day to know if it was increasing or decreasing so
@@ -154,8 +163,8 @@ std::vector<ConsDays> getConsDays(const std::vector<Measurement>& measurements) 
 
       // Now we should have two days that are following each other
       // so we reset as we did in the start
-      nondecreasing = avg_temp_day[i] >= avg_temp_day[i-1];
-      cons_days = 1;
+      nondecreasing = (avg_temp_day[i] >= avg_temp_day[i-1]);
+      cons_days = 2;
     }
 
     // Iterate the new date forward
@@ -168,7 +177,7 @@ std::vector<ConsDays> getConsDays(const std::vector<Measurement>& measurements) 
 void plotConsDaysHist(std::vector<ConsDays>& res) {
   TCanvas *c1 = new TCanvas("c1","");
   c1->cd();
-  double xmin{0.5};
+  double xmin{1.5};
   double xmax{50.5};
   int nbins{int(xmax-xmin)};
 
@@ -209,7 +218,6 @@ void plotConsDaysHist(std::vector<ConsDays>& res) {
   fit1->SetLineStyle(2);
   double a1{fit1->GetParameter("p0")};
   double b1{fit1->GetParameter("p1")};
-  std::cout << "a = " << a1 << ", b = " << b1 << std::endl;
   TString fit1_text{Form("Nondecreasing fit: %.0f#times %.2f^{n}", a1, b1)};
 
   h2->Fit("fit2", "RNq");
@@ -218,7 +226,6 @@ void plotConsDaysHist(std::vector<ConsDays>& res) {
   fit2->SetLineStyle(2);
   double a2{fit2->GetParameter("p0")};
   double b2{fit2->GetParameter("p1")};
-  std::cout << "a = " << a2 << ", b = " << b2 << std::endl;
   TString fit2_text{Form("Decreasing fit: %.0f#times %.2f^{n}", a2, b2)};
 
   gStyle->SetOptStat(0);
@@ -230,11 +237,13 @@ void plotConsDaysHist(std::vector<ConsDays>& res) {
   h1->SetMaximum(std::max(ymax1, ymax2) * 1.1);
   h1->GetXaxis()->SetRangeUser(xmin, std::max(xmax1, xmax2) * 1.1);
 
+  h1->ClearUnderflowAndOverflow();
+
   h1->GetXaxis()->SetTitle("Consecutive days");
   h1->GetYaxis()->SetTitle("Entries");
   h1->SetLineColor(kRed);
   h2->SetLineColor(kBlue);
-  h1->Draw("same");
+  h1->Draw();
   h2->Draw("same");
   fit1->Draw("same");
   fit2->Draw("same");
@@ -310,11 +319,11 @@ bool isNextDay(Date current_date, Date previous_date) {
   bool new_day{(current_day == previous_day + 1)
               && (current_month == previous_month)
               && (current_year == previous_year)};
-  bool new_month{(current_day == previous_day % getDaysPerMonth(previous_year, previous_month) + 1) 
+  bool new_month{(current_day == (previous_day + 1) % getDaysPerMonth(previous_year, previous_month)) 
                 && (current_month == previous_month + 1) 
                 && (current_year == previous_year)};
-  bool new_year{(current_day == previous_day % getDaysPerMonth(previous_year, previous_month) + 1)
-              && (current_month == previous_month % 12 + 1)
+  bool new_year{(current_day == (previous_day +  1) % getDaysPerMonth(previous_year, previous_month))
+              && (current_month == (previous_month + 1) % 12)
               && (current_year == previous_year + 1)};
   
   if (new_day || new_month || new_year) {
@@ -323,4 +332,5 @@ bool isNextDay(Date current_date, Date previous_date) {
   else {
     return false;
   }
+}
 }

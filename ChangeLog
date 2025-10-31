@@ -11,8 +11,7 @@
 
 	* Added a python script datacleaner.py that cleans the data
 
-
-2025-10-22 Ossian Bodin  <ossianbodin28@gmail.com>
+2025-10-22
 
 	Data extraction/reading and CLI interface
 
@@ -20,7 +19,7 @@
 	* Fixed syntax errors in the above mentioned code
 	* Added CLI parser functionality to the main file
 
-2025-10-23 Ossian Bodin  <ossianbodin28@gmail.com>
+2025-10-23
 
 	Makefile, README changes and clean_data function
 
@@ -28,19 +27,19 @@
 	* Added instructions on how to install the CLI parser argumentum in the README
 	* Added function that automatically calls the cleaner script if one inputs an uncleaned data set
 
-2025-10-26 Ossian Bodin  <ossianbodin28@gmail.com>
+2025-10-26
 
 	Minor bug fix in`datacleaner.py
 
 	* datacleaner.py now returns 0 if succesful so it can be checked in C++
 
-2025-10-29 Ossian Bodin  <ossianbodin28@gmail.com>
+2025-10-29
 
 	Consecutive days analysis
 
 	* Created the basic structure of the consecutive days analysis
 
-2025-10-30 Ossian Bodin  <ossianbodin28@gmail.com>
+2025-10-30
 
 	Consecutive days analysis plotting
 

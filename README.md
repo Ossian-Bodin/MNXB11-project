@@ -4,35 +4,18 @@ This is the repository for team 9's MNXB11 project.
 
 # Directory structure
 
-The base directory here contains your "main" file, i.e. the C++ file that you
-will be using as your starting point in your project. The code in this file should ideally be short and just make use of the functionality that you've
-prepared in your other translation units. The majority of your code should be placed in  the two folders where you define your translation units, `src/` and `include/`.
+The root directory contains the following:
 
-Do remember to add your include guards to your header files, otherwise the compiler will
-get multiple definitions if you end up loading two source files that include the
-same header.
+* `datasets/` 
+    * This directory holds the (compressed) datasets that are used for the analysis. Instructions for how to extract the weather data sets are in the `README.md` in the directory and for analysis 5 (ice cream sales) you find instructions for how to extract it below.
+* `include/`
+    * Contains all the header files specific to this project.
+* `src/`
+    * Contains all the source files (except `main.cxx`) specific to this project.
+* `scripts/`
+    * Contains a Python script that cleans the weather data files
 
-In the template you can find a small translation unit called Example (in [src/Example.cxx](src/Example.cxx) and [include/Example.h](include/Example.h)) that shows some commented reminders of how the syntax for some C++ constructs work. Feel free to use this as a reference to remind yourself of how to do something while working on it but make sure to remove it from your final project version!
 
-There is a demonstration of a toy project you can use for inspiration at [EinarElen/MNXB11-project-demo](https://github.com/EinarElen/MNXB11-project-demo). You should not copy code from this repository. There are some intentional bugs hiding in there, see if you can spot them. 
-
-We have also included three special files in the base of the repository 
-- [.gitignore](.gitignore)
-  - This file contains regular expressions that git tells git that it shouldn't add certain file to your repository. 
-  - Your git repository should generally not contain binary files like object files or executables nor should it contain build artefacts like external libraries. 
-- [.clang-format](.clang-format)
-  - This file holds the configuration for the clang-format tool that you can use to format your code consistently 
-  - It is a good idea to keep your code formatted in a consistent manner, especially when working in groups but doing it manually is a waste of your time. Use a tool for it!
-  ```
-  # Show what the src/Example.cxx file would look like if formatted
-  clang-format src/Example.cxx 
-  # Carry out the formatting in the file directly 
-  clang-format src/Example.cxx -i
-  ```
-  - The `.clang-format` file holds the configuration that clang-format will use to determine how to format your code. By default, it will be formatted according to Google's style but you can pick any that you like from https://clang.llvm.org/docs/ClangFormatStyleOptions.html
-- [rootlogon.C](rootlogon.C)
-  - This file contains code that ROOT will execute automatically whenever you start it, a good place to place general style choices you want to make or anything else you always want to run! 
-  - Be careful to not include anything that depends on your particular machine here (e.g. absolute paths)
 # Building the project
 
 The [datasets](datasets) folder contains open data from SMHI and a README.md with further information about it.
@@ -64,9 +47,9 @@ cmake ../../argumentum -DCMAKE_INSTALL_PREFIX=../../external
 make -j4 install # To use four cores
 ```
 
+## Running the program
 
-
-## Analyses
+Once the above library has been installed. One can run `make` in the root directory to compile the program into an executable called `main`. Once compiled, the program can be run from the root directory using `./main -i \<SMHI datafile path\> -a ANALYSIS-CHOICE`. Running simply `./main` will 
 
 ### 5. Ice Cream Analysis
 To be able to run the analysis, unzip the `/datasets/ice_cream_dataset.tgz` by running the following command from root directory:

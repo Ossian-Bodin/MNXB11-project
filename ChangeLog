@@ -3,6 +3,24 @@
 // NOTE: copying git log over this file is NOT a ChangeLog! See this: <https://www.gnu.org/prep/standards/html_node/Change-Logs.html>
 // Changelog is a summary of a lot of related commits.
 
+2025-10-31 Hugo Henriksson Nordqvist <h.henriksson42@outlook.com>
+
+2025-10-31
+* Added changelog updates
+
+2025-10-30
+* Finalized the creation of void function  tempReader 
+
+2025-10-29
+* Fixed compilation issue with g++ by adding an exception for error codes in DataExtraction.cxx
+
+2025-10-23
+* Added the first iteration of a function tempReader which reads the TTree created from the persist_measurement function and returns a histogram with the mean temperatures each year for a dataset.
+
+2025-10-22
+* Created a class called Measurement which can store the measurements from the datafiles, along with Get-functions to access them. Created two functions. One called read_measurements for filling a vector of the object type Measurement with all data from the datafiles. The other function, persist_measurements, takes the vector of object type Measurement and creates a TTree with branches filled with data, which can later be used in analysis.
+
+
 # Template: 
 
 YYYY-MM-DD Name LastName  <email@somewhere>

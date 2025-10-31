@@ -8,6 +8,7 @@
 #include <TTreeReader.h>
 #include <TTreeReaderValue.h>
 #include <iostream>
+#include <TStyle.h>
 #include "Measurement.h"
 
 // Gaussian function for fitting
@@ -114,6 +115,7 @@ void analysis3(const std::string& filename) {
     coldHist->Fit(gaussCold, "Q0");
 
     // Creates a legend
+    gStyle->SetOptStat(0); // Remove hist stat default legend
     TLegend *legend = new TLegend(0.75, 0.75, 0.89, 0.89);
     legend->AddEntry(hotHist, "Warmest day", "F"); 
     legend->AddEntry(coldHist, "Coldest day", "F"); 
@@ -143,5 +145,5 @@ void analysis3(const std::string& filename) {
     gaussCold->Draw("SAME");
     legend->Draw(); 
 
-    c3->SaveAs("results/MY_histogram.pdf");
-    }
+    c3->SaveAs("results/HotCold.pdf");
+}

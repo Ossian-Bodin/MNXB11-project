@@ -1,6 +1,6 @@
 #include <argumentum/argparse.h>
 
-// #include "Analysis.h"
+#include "analysis3.h"
 #include "DataExtraction.h"
 #include "meanTemp.h"
 #include "ConsDays.h"
@@ -78,6 +78,8 @@ int main(int argc, char *argv[]) {
     input_file = clean_data(input_file);
   }
 
+  std::cout << input_file << std::endl;
+
   std::string output_directory{fs::path(output_file).parent_path()};
 
   if (!fs::is_directory(output_directory) || !fs::exists(output_directory)) {
@@ -107,7 +109,9 @@ int main(int argc, char *argv[]) {
     }
     case 3: {
       std::cout << "Running a third analysis" << std::endl;
-      // some_other_analysis(measurements, output_file);
+      persist_measurements(measurements, output_file);
+      analysis3(output_file);
+
       break;
     }
     case 4: {

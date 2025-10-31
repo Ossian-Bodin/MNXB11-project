@@ -55,8 +55,8 @@ int main(int argc, char *argv[]) {
       "Choose which of the project's steps to run: 0 -> Run data extraction "
       "only and persist the raw data, 1 -> Run analysis 1 (),"
       " 2 -> Run consecutive day analysis () -> Run analysis 3 (),"
-      " 4 -> Run yearly mean temperature analysis , 5 -> Run analysis 5 (),"
-      "6 -> Run all five analyses");
+      " 4 -> Run yearly mean temperature analysis , 5 -> Run ice cream sales analysis, "
+      "6 -> Run all five analyses.");
   
   // Create a third parameter that lets the user specify the output file (not required)
   std::string output_file{};
@@ -121,9 +121,8 @@ int main(int argc, char *argv[]) {
     
     case 5:
     {
-      // ice cream sales vs average monthly temperature
-        plotTempVsSales(measurements, 1972, 2019); // note: 2020 doesn't seem to work, still alignment issues?
-
+      std::cout << "Running ice cream sales analysis" << std::endl;
+      plotTempVsSales(measurements, 1972, 2019); // note: 2020 doesn't seem to work, still alignment issues?
       break;
     }
 

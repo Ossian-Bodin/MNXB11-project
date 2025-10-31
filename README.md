@@ -69,6 +69,10 @@ make -j4 install # To use four cores
 ## Analyses
 
 ### 5 Ice Cream Analysis
+To be able to run the analysis, unzip the /datasets/ice_cream.tgz by the following command:
+
+  tar -xvzf ./datasets/ice_cream.tgz
+
 To run the analysis use the following executable call:
 
   ./main -i \<SMHI datafile path\> -a 5

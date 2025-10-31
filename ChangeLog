@@ -3,6 +3,30 @@
 // NOTE: copying git log over this file is NOT a ChangeLog! See this: <https://www.gnu.org/prep/standards/html_node/Change-Logs.html>
 // Changelog is a summary of a lot of related commits.
 
+
+2025-10-31 Axel Cerne <ax4888ce-s@student.lu.se>
+
+	Commits on Oct 26, 2025: 
+		Added a separate dataset ice_cream.csv
+	Commits on Oct 27, 2025: 
+		Wrote a reader function for ice_cream.csv
+			* reader stores comma-separated cols in std::vectors in a struct IceCreamData
+		Removed .csv file from git (local only)
+		Wrote my own reader for SMHI datasets to extract bara-data into struct TemperatureData
+			* Wrote computeMonthlyTemp() to average temp readings over month so that temp monthly corresp to ice_cream (months)
+	Commits on Oct 29, 2025:
+		Implemented plot function() for datasets
+			* first a plotTempOnly() to see if it works, and to learn ROOT
+			* finally a plotTempVsSales() to plot both in the same canvas
+	Commits on Oct 30, 2025:
+		Refactored computeMonthlyTemp() and plotTempVsSales() to align with repo workflow, using the existing Measurement class and read_measurements() instead of my separate temperature reader
+			* i.e., passing std::vector\<Measurement\> instead of std::string filename to my functions
+		Implemented gPad to plot on a double axis
+	Commits on Oct 30, 2025:
+		Buggfixing alignment issues between ice_cream months and temp months
+		(still not 100% satisfied)
+
+
 2025-10-31 Hugo Henriksson Nordqvist <h.henriksson42@outlook.com>
 
 2025-10-31
@@ -21,28 +45,4 @@
 * Created a class called Measurement which can store the measurements from the datafiles, along with Get-functions to access them. Created two functions. One called read_measurements for filling a vector of the object type Measurement with all data from the datafiles. The other function, persist_measurements, takes the vector of object type Measurement and creates a TTree with branches filled with data, which can later be used in analysis.
 
 
-# Template: 
-
-YYYY-MM-DD Name LastName  <email@somewhere>
-
-	High Level description of work done
-
-	* Fine grained description of important things that you want to communicate
-	* Fine grained description of important things that you want to communicate
-
-
-# Example (entries from newest to oldest):
-
-2025-09-26 Florido Paganelli  <florido.paganelli@fysik.lu.se>
-
-	Reviewing content of project template
-
-	* Added ChangeLog.txt with comments and examples
-
-2025-09-25 Florido Paganelli  <florido.paganelli@fysik.lu.se>
-
-	Reviewing content of project template
-
-	* Checking directory structure
-	* Added Workplan.md
 

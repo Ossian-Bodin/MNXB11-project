@@ -1,24 +1,28 @@
 #include "DataExtraction.h"
+
 #include <filesystem>
 
 namespace fs = std::filesystem;
 
-std::string clean_data(std::string &raw_file) {
-    // Define path to clean file
-    std::string clean_file{fs::path(raw_file).relative_path().parent_path().u8string() + "/baredata_" + fs::path(raw_file).filename().u8string()};
+std::string clean_data(std::string& raw_file) {
+  // Define path to clean file
+  std::string clean_file{
+      fs::path(raw_file).relative_path().parent_path().u8string() +
+      "/baredata_" + fs::path(raw_file).filename().u8string()};
 
-    // Check if clean file already exists, if not clean it
-    if (!fs::exists(clean_file)) {
-        std::string command{"./scripts/datacleaner.py "};
-        command += raw_file;
-        int exitcode = system(command.c_str());
-        if (exitcode != 0) {
-            std::cerr << "Data cleaning script failed with exit code " << exitcode << std::endl;
-            std::exit(exitcode);
-        }
+  // Check if clean file already exists, if not clean it
+  if (!fs::exists(clean_file)) {
+    std::string command{"./scripts/datacleaner.py "};
+    command += raw_file;
+    int exitcode = system(command.c_str());
+    if (exitcode != 0) {
+      std::cerr << "Data cleaning script failed with exit code " << exitcode
+                << std::endl;
+      std::exit(exitcode);
     }
-    // Return path of clean file
-    return clean_file;
+  }
+  // Return path of clean file
+  return clean_file;
 }
 std::vector<Measurement> read_measurements(
     const std::string& filename) {  // constructor initialization

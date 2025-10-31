@@ -1,14 +1,14 @@
 #ifndef MEANTEMP_H
 #define MEANTEMP_H
 
+#include <TCanvas.h>
 #include <TFile.h>
+#include <TGraph.h>
 #include <TH1D.h>
+#include <TStyle.h>
 #include <TTree.h>
 #include <TTreeReader.h>
 #include <TTreeReaderValue.h>
-#include <TGraph.h>
-#include <TCanvas.h>
-#include <TStyle.h>
 
 #include <iostream>
 

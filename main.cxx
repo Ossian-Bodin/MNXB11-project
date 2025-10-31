@@ -1,28 +1,27 @@
 #include <argumentum/argparse.h>
 
-#include "analysis3.h"
-#include "DataExtraction.h"
-#include "meanTemp.h"
-#include "ConsDays.h"
-#include "Ice_cream_analysis.h"
-#include "Analysis2.h"
-
+#include <filesystem>
 #include <iostream>
 #include <string>
-#include <filesystem>
 
+#include "Analysis2.h"
+#include "ConsDays.h"
+#include "DataExtraction.h"
+#include "Ice_cream_analysis.h"
+#include "analysis3.h"
+#include "meanTemp.h"
 
 namespace fs = std::filesystem;
 
 int main(int argc, char *argv[]) {
-  
   // Create the parser object
   auto parser = argumentum::argument_parser{};
 
   // Initialize the name and a description for the program
   const std::string program_name{argv[0]};
-  const std::string program_description{"Team 9's program for the MNXB11 project"};
-  
+  const std::string program_description{
+      "Team 9's program for the MNXB11 project"};
+
   // Configure the parser with the given name and description
   auto parser_configuration{parser.config()};
   parser_configuration.program(program_name);
@@ -34,13 +33,13 @@ int main(int argc, char *argv[]) {
   // Initialize the string object that stores the input file path
   std::string input_file{};
 
-
   // Create the object for the input file parameter
   auto input_file_parameter{
       parameters.add_parameter(input_file, "-i", "--input-file")};
   // Tell the input file parameter that it is a required parameter
   input_file_parameter.required(true);
-  // Tell the input file paratmeter that it should expect one and only one parameter
+  // Tell the input file paratmeter that it should expect one and only one
+  // parameter
   input_file_parameter.nargs(1);
   input_file_parameter.help("The (cleaned up) data file with weather data");
 
@@ -56,16 +55,19 @@ int main(int argc, char *argv[]) {
       "Choose which of the project's steps to run: 0 -> Run data extraction "
       "only and persist the raw data, 1 -> Run analysis 1 (),"
       " 2 -> Run consecutive day analysis () -> Run analysis 3 (),"
-      " 4 -> Run yearly mean temperature analysis , 5 -> Run ice cream sales analysis, "
+      " 4 -> Run yearly mean temperature analysis , 5 -> Run ice cream sales "
+      "analysis, "
       "6 -> Run all five analyses.");
-  
-  // Create a third parameter that lets the user specify the output file (not required)
+
+  // Create a third parameter that lets the user specify the output file (not
+  // required)
   std::string output_file{};
   auto output_file_parameter{
-    parameters.add_parameter(output_file, "-o", "--output")};
+      parameters.add_parameter(output_file, "-o", "--output")};
   output_file_parameter.nargs(1);
   output_file_parameter.default_value("results/output.root");
-  output_file_parameter.help("Specify the output directory and output file name (not required).");
+  output_file_parameter.help(
+      "Specify the output directory and output file name (not required).");
 
   bool successful_parse{parser.parse_args(argc, argv)};
 
@@ -74,7 +76,8 @@ int main(int argc, char *argv[]) {
     std::exit(1);
   }
 
-  // Check if input_file is a cleaned data file, if not replace it with the clean file
+  // Check if input_file is a cleaned data file, if not replace it with the
+  // clean file
   if (input_file.find("baredata_") == std::string::npos) {
     input_file = clean_data(input_file);
   }
@@ -124,7 +127,9 @@ int main(int argc, char *argv[]) {
     }
     case 5: {
       std::cout << "Running ice cream sales analysis" << std::endl;
-      plotTempVsSales(measurements, 1972, 2019); // note: 2020 doesn't seem to work, still alignment issues?
+      plotTempVsSales(
+          measurements, 1972,
+          2019);  // note: 2020 doesn't seem to work, still alignment issues?
       break;
     }
     case 6: {
@@ -147,11 +152,6 @@ int main(int argc, char *argv[]) {
       std::exit(2);
     }
   }
-
-
-
-
-
 
   return 0;
 }

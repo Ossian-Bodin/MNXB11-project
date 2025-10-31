@@ -35,7 +35,8 @@ void tempReader(const std::string& filename) {
       break;
     }
   }
-  std::cout <<"Starting on year: " << minyear <<" and ending on year: " << maxyear << std::endl;
+  std::cout << "Starting on year: " << minyear
+            << " and ending on year: " << maxyear << std::endl;
   int currentyear{*year};
   double FetchedTemp{0.0};
   double totaltemp{0.0};
@@ -51,13 +52,12 @@ void tempReader(const std::string& filename) {
       toti++;
       totaltemp += *temp;  // For total average
 
-    } else{ 
+    } else {
       FetchedTemp += *temp;  // Sum temperatures for the year
       totaltemp += *temp;    // For total average
       i++;
       toti++;
     }
-    
   }
 
   double totalaverageTemp = totaltemp / toti;
@@ -71,17 +71,15 @@ void tempReader(const std::string& filename) {
   averageTempHist->GetYaxis()->SetTitleOffset(1.1);
   averageTempHist->SetAxisRange(-5, 30, "Y");
 
-
   TFile* outputFile = new TFile("results/meanTemperature.root", "RECREATE");
   auto* c1 =
       new TCanvas("Average Temperature Graph", "Average Temperature Graph");
 
-    averageTempHist->SetTitle("Average Yearly Temperature");
+  averageTempHist->SetTitle("Average Yearly Temperature");
   outputFile->cd();
-  gStyle->SetOptStat(0); // Remove hist stat default legend
+  gStyle->SetOptStat(0);  // Remove hist stat default legend
   averageTempHist->Draw("P");
   c1->SaveAs("results/MeanYearlyTemperature.pdf");
   c1->Write();
   outputFile->Close();
-
 };

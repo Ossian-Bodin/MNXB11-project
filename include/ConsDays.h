@@ -3,7 +3,6 @@
 
 #include <vector>
 
-
 namespace ConsecutiveDays {
 
 struct Date {
@@ -13,11 +12,11 @@ struct Date {
 };
 
 struct ConsDays {
-  bool nondecreasing; 
+  bool nondecreasing;
   int cons_days;
 
-  // The date corresponds to the day it ended i.e. 
-  // the day before was the last day that was included 
+  // The date corresponds to the day it ended i.e.
+  // the day before was the last day that was included
   // in the streak
   Date date;
 };
@@ -34,6 +33,6 @@ int getDaysPerMonth(int month);
 
 bool isNextDay(Date current_date, Date previous_date);
 
-}
+}  // namespace ConsecutiveDays
 
 #endif /* CONS_DAYS_h */

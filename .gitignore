@@ -47,10 +47,10 @@ argumentum*
 main
 
 # Datasets
-datasets/*
+datasets/*.csv
+datasets/*.dat
+datasets/*.txt
 
-# Gitignore
-.gitignore
 
 # vsCode
-.vsCode/*
+.vscode/*

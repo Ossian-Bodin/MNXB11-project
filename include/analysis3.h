@@ -1,27 +1,18 @@
 #ifndef ANALYSIS3_H
 #define ANALYSIS3_H
 
+#include <TCanvas.h>
+#include <TF1.h>
 #include <TFile.h>
-#include <TH1D.h>
-#include <TTree.h>
+#include <TGraph.h>
+#include <TH2D.h>
+#include <TLegend.h>
 #include <TTreeReader.h>
 #include <TTreeReaderValue.h>
-#include <TGraph.h>
-#include <TCanvas.h>
-
 #include <iostream>
 
 void analysis3(const std::string& filename);
 
-
-
-
-
-// #include <string>
-// #include <vector>
-// #include "Measurement.h"
-
-// void analysis3(const std::vector<Measurement>& measurements, const std::string& output_filename);
 
 #endif
 

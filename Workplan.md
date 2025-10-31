@@ -11,7 +11,7 @@ Team members: 5
 
 ### Data extraction 
 
- - [] Write a function that extracts the necessary data in `main.cxx` which can be used by everyone.
+ - [x] Write a function that extracts the necessary data in `main.cxx` which can be used by everyone.
 
 ### Analysis
 

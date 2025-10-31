@@ -2,12 +2,12 @@
 #ifndef MEASUREMENT_H
 #define MEASUREMENT_H
 #include <iostream>
-class Measurement { //class object Measurement declaration
+class Measurement {  // class object Measurement declaration
  public:
-  Measurement(int _year, int _month, int _day, int _hour, int _minute, int _second,
-              double _temperature, std::string _quality);
+  Measurement(int _year, int _month, int _day, int _hour, int _minute,
+              int _second, double _temperature, std::string _quality);
 
-  //Get functions
+  // Get functions
   int getYear() const;
   int getMonth() const;
   int getDay() const;

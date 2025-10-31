@@ -45,3 +45,12 @@ argumentum*
 
 # Don't add the main executable to git
 main
+
+# Datasets
+datasets/*.csv
+datasets/*.dat
+datasets/*.txt
+
+
+# vsCode
+.vscode/*

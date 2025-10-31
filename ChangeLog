@@ -3,6 +3,34 @@
 // NOTE: copying git log over this file is NOT a ChangeLog! See this: <https://www.gnu.org/prep/standards/html_node/Change-Logs.html>
 // Changelog is a summary of a lot of related commits.
 
+
+2025-10-31 Axel Cerne <ax4888ce-s@student.lu.se>
+
+	Commits on Oct 26, 2025: 
+		Added a separate dataset ice_cream.csv
+	Commits on Oct 27, 2025: 
+		Wrote a reader function for ice_cream.csv
+			* reader stores comma-separated cols in std::vectors in a struct IceCreamData
+		Removed .csv file from git (local only)
+		Wrote my own reader for SMHI datasets to extract bara-data into struct TemperatureData
+			* Wrote computeMonthlyTemp() to average temp readings over month so that temp monthly corresp to ice_cream (months)
+	Commits on Oct 29, 2025:
+		Implemented plot function() for datasets
+			* first a plotTempOnly() to see if it works, and to learn ROOT
+			* finally a plotTempVsSales() to plot both in the same canvas
+	Commits on Oct 30, 2025:
+		Refactored computeMonthlyTemp() and plotTempVsSales() to align with repo workflow, using the existing Measurement class and read_measurements() instead of my separate temperature reader
+			* i.e., passing std::vector\<Measurement\> instead of std::string filename to my functions
+		Implemented gPad to plot on a double axis
+	Commits on Oct 30, 2025:
+		Buggfixing alignment issues between ice_cream months and temp months
+		(still not 100% satisfied)
+
+	
+
+
+
+
 # Template: 
 
 YYYY-MM-DD Name LastName  <email@somewhere>
@@ -27,4 +55,6 @@ YYYY-MM-DD Name LastName  <email@somewhere>
 
 	* Checking directory structure
 	* Added Workplan.md
+
+
 

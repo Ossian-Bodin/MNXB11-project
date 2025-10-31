@@ -71,7 +71,7 @@ make -j4 install # To use four cores
 ### 5 Ice Cream Analysis
 To run the analysis use the following executable call:
 
-  ./main -i <SMHI datafile path> -a 5
+  ./main -i \<SMHI datafile path\> -a 5
 
 Produces a plot (under /results) of monthly ice cream sales (IPN) and average monthly temperature recorded in the corresponding SMHI location. 
 

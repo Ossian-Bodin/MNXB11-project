@@ -52,8 +52,8 @@ int main(int argc, char *argv[]) {
   analysis_choice_parameter.help(
       "Choose which of the project's steps to run: 0 -> Run data extraction "
       "only and persist the raw data, 1 -> Run analysis 1 (),"
-      " 2 -> Run analysis 2 () -> Run analysis 3 (),"
-      " 4 -> Run analysis 4 () , 5 -> Run analysis 5 (),"
+      " 2 -> Run consecutive day analysis () -> Run analysis 3 (),"
+      " 4 -> Run yearly mean temperature analysis , 5 -> Run analysis 5 (),"
       "6 -> Run all five analyses");
   
   // Create a third parameter that lets the user specify the output file (not required)
@@ -99,11 +99,8 @@ int main(int argc, char *argv[]) {
     }
     case 2: {
       std::cout << "Running the consecutive days analysis" << std::endl;
-
       auto res{ConsecutiveDays::getConsDays(measurements)};
-
       ConsecutiveDays::plotConsDaysHist(res);
-      
       break;
     }
     case 3: {
@@ -112,12 +109,11 @@ int main(int argc, char *argv[]) {
       break;
     }
     case 4: {
-      std::cout << "Running a fourth analysis" << std::endl;
+      std::cout << "Running yearly mean temperature analysis" << std::endl;
       std::cout << "Persisting raw measurement data to file " << output_file
                 << std::endl;
       persist_measurements(measurements, output_file);
       tempReader("results/output.root");
-      // some_other_analysis(measurements, output_file);
       break;
     }
     case 5: {
@@ -127,8 +123,10 @@ int main(int argc, char *argv[]) {
     }
     case 6: {
       std::cout << "Running all analyzes!" << std::endl;
-      // some_analysis(measurements, output_file);
-      // some_other_analysis(measurements, output_file);
+      std::cout << "Persisting raw measurement data to file " << output_file
+                << std::endl;
+      persist_measurements(measurements, output_file);
+      tempReader("results/output.root");
       break;
     }
     default: {

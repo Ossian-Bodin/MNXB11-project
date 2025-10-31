@@ -65,7 +65,7 @@ void tempReader(const std::string& filename) {
             << std::endl;
   averageTempHist->GetXaxis()->CenterTitle();
   averageTempHist->GetYaxis()->CenterTitle();
-  averageTempHist->GetYaxis()->SetTitle("Average Temperature (C)");
+  averageTempHist->GetYaxis()->SetTitle("Average Temperature [#circC]");
   averageTempHist->GetXaxis()->SetTitle("Year");
   averageTempHist->GetXaxis()->SetTitleOffset(1.2);
   averageTempHist->GetYaxis()->SetTitleOffset(1.1);

@@ -2,7 +2,7 @@
 # About
 This is the repository for team 9's MNXB11 project.
 
-# Directory structure
+## Directory structure
 
 The root directory contains the following:
 
@@ -13,26 +13,15 @@ The root directory contains the following:
 * `src/`
     * Contains all the source files (except `main.cxx`) specific to this project.
 * `scripts/`
-    * Contains a Python script that cleans the weather data files
-
-
-# Building the project
-
-The [datasets](datasets) folder contains open data from SMHI and a README.md with further information about it.
-
-The `Makefile` can be used to compile the source files. If you create a new source file that will be used in `main.cxx` you will need to add it as a dependency of the `main` target.
-
-By default, the `all` target will be run which 
-- Compiles any `.cxx` files in the `src/` directory into object files 
-- Compiles `main.cxx` and links with all the object files in `src/`
-
-You can run the `clean` target to remove any object files that have been produced as well as the `main` executable.
+    * Contains a Python script that cleans the weather data files.
+* `main.cxx`
+    * Main source file that combines the different analyses and handles CLI parsing.
 
 ## Building external libraries
 
 ### Argumentum
 
-The `main.cxx` file makes use of the CLI parsing library `argumentum`. Follow these instructions to build the library. The following commands should be run from starting from the root directory.
+The `main.cxx` file makes use of the CLI parsing library `argumentum`. Follow these instructions to build the library. The following commands should be run starting from the root directory.
 ``` sh
 # Clone the library 
 git clone https://github.com/mmahnic/argumentum # if not specified this automatically puts it into a directory called argumentum
@@ -47,9 +36,17 @@ cmake ../../argumentum -DCMAKE_INSTALL_PREFIX=../../external
 make -j4 install # To use four cores
 ```
 
+## Building the project
+
+The `Makefile` can be used to compile the source files.
+
+By default, the `all` target will be run which simply compiles `main`. To compile individual source files into object files one can run `make src/%.o` where `%` is replaced by the name of source file (excluding .cxx extension).
+
+You can run the `clean` target to remove any object files that have been produced as well as the `main` executable.
+
 ## Running the program
 
-Once the above library has been installed. One can run `make` in the root directory to compile the program into an executable called `main`. Once compiled, the program can be run from the root directory using `./main -i \<SMHI datafile path\> -a ANALYSIS-CHOICE`. Running simply `./main` will 
+Once the `argumentum` library has been installed, the data sets have been extracted, and the program compiled, the program can be run from the root directory using `./main -i <SMHI datafile path> -a ANALYSIS-CHOICE`. Running simply `./main` will show info on the the different arguments.
 
 ### 5. Ice Cream Analysis
 To be able to run the analysis, unzip the `/datasets/ice_cream_dataset.tgz` by running the following command from root directory:
@@ -58,7 +55,7 @@ To be able to run the analysis, unzip the `/datasets/ice_cream_dataset.tgz` by r
 
 To run the analysis use the following executable call:
 
-  `./main -i \<SMHI datafile path\> -a 5`
+  `./main -i <SMHI datafile path> -a 5`
 
 Produces a plot (under `/results`) of monthly ice cream sales (IPN) and average monthly temperature recorded in the corresponding SMHI location. 
 

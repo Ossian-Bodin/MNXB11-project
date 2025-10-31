@@ -79,6 +79,7 @@ void tempReader(const std::string& filename) {
     averageTempHist->SetTitle("Average Yearly Temperature");
   outputFile->cd();
   averageTempHist->Draw("P");
+  c1->SaveAs("results/MeanTemp.pdf");
   c1->Write();
   outputFile->Close();
 

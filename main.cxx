@@ -117,21 +117,21 @@ int main(int argc, char *argv[]) {
       persist_measurements(measurements, output_file);
       tempReader("results/output.root");
       break;
-    
-    
     case 5:
     {
       std::cout << "Running ice cream sales analysis" << std::endl;
       plotTempVsSales(measurements, 1972, 2019); // note: 2020 doesn't seem to work, still alignment issues?
       break;
     }
-
     case 6:
       std::cout << "Running all analyzes!" << std::endl;
+      auto res{ConsecutiveDays::getConsDays(measurements)};
+      ConsecutiveDays::plotConsDaysHist(res);
       std::cout << "Persisting raw measurement data to file " << output_file
                 << std::endl;
       persist_measurements(measurements, output_file);
       tempReader("results/output.root");
+      plotTempVsSales(measurements, 1972, 2019);
       break;
     }
     default: {

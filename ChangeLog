@@ -44,7 +44,6 @@
 2025-10-22
 * Created a class called Measurement which can store the measurements from the datafiles, along with Get-functions to access them. Created two functions. One called read_measurements for filling a vector of the object type Measurement with all data from the datafiles. The other function, persist_measurements, takes the vector of object type Measurement and creates a TTree with branches filled with data, which can later be used in analysis.
 
-
 2025-10-30 Ossian Bodin  <ossianbodin28@gmail.com>
 
 2025-10-30
@@ -86,3 +85,14 @@
 	Data cleaning of weather data sets
 
 	* Added a python script datacleaner.py that cleans the data
+
+2025-10-31 Nellie Gustafsson <ne8378gu-s@student.lu.se>
+
+	Commits on Oct 28, 2025:
+		*Added function analysis3() 
+	
+	Commits on Oct 29, 2025:
+		*Implemented function that plots the highest and lowest temperature of each year
+
+	Commits on Oct 30, 2025:
+		*Added fit to data

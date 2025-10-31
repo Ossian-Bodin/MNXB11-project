@@ -8,6 +8,7 @@
 #include <TTreeReaderValue.h>
 #include <TGraph.h>
 #include <TCanvas.h>
+#include <TStyle.h>
 
 #include <iostream>
 

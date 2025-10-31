@@ -49,7 +49,7 @@ You can run the `clean` target to remove any object files that have been produce
 Once the `argumentum` library has been installed, the data sets have been extracted, and the program compiled, the program can be run from the root directory using `./main -i <SMHI datafile path> -a ANALYSIS-CHOICE`. Running simply `./main` will show info on the the different arguments.
 
 ### 5. Ice Cream Analysis
-To be able to run the analysis, unzip the `/datasets/ice_cream_dataset.tgz` by running the following command from root directory:
+To be able to run the analysis, unzip the `/datasets/ice_cream_dataset.tgz` by running the following command from the root directory:
 
   `tar -xvzf ./datasets/ice_cream_dataset.tgz -C ./datasets`
 

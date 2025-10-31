@@ -80,7 +80,7 @@ void tempReader(const std::string& filename) {
   outputFile->cd();
   gStyle->SetOptStat(0); // Remove hist stat default legend
   averageTempHist->Draw("P");
-  c1->SaveAs("results/MeanTemp.pdf");
+  c1->SaveAs("results/MeanYearlyTemperature.pdf");
   c1->Write();
   outputFile->Close();
 

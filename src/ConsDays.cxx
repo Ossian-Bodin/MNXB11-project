@@ -78,6 +78,7 @@ std::vector<ConsDays> getConsDays(
   previous_date.year = years[1];
 
   Date current_date;
+  double current_temp;
 
   bool nondecreasing{avg_temp_day[1] >= avg_temp_day[0]};
 
@@ -87,11 +88,12 @@ std::vector<ConsDays> getConsDays(
     current_date.day = days[i];
     current_date.month = months[i];
     current_date.year = years[i];
+    current_temp = avg_temp_day[i];
 
     // Check if the next measurement is the day after the previous one
     if (isNextDay(current_date, previous_date)) {
       // Check if temperature is nondecreasing
-      if (avg_temp_day[i] >= previous_temp) {
+      if (current_temp >= previous_temp) {
         // If it was nondecreasing already, add 1 to cons_days counter.
         // Otherwise the decreasing streak is broken and we append the previous
         // values to the vectors and set nondecreasing to false and reset
@@ -167,6 +169,7 @@ std::vector<ConsDays> getConsDays(
 
     // Iterate the new date forward
     previous_date = current_date;
+    previous_temp = current_temp;
   }
 
   return res;
@@ -176,7 +179,7 @@ void plotConsDaysHist(std::vector<ConsDays>& res) {
   TCanvas* c1 = new TCanvas("c1", "");
   c1->cd();
   double xmin{1.5};
-  double xmax{50.5};
+  double xmax{10.5};
   int nbins{int(xmax - xmin)};
 
   TH1F* h1 = new TH1F("h1", "", nbins, xmin, xmax);
@@ -201,7 +204,7 @@ void plotConsDaysHist(std::vector<ConsDays>& res) {
 
   TString hist_text{
       Form("#splitline{Consecutive days of nondecreasing/decreasing "
-           "daily}{average temperature between the years %d-%d}",
+           "daily}{mean temperature between the years %d-%d}",
            min_year, max_year)};
 
   h1->SetTitle(hist_text);

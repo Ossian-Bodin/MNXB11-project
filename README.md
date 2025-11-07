@@ -1,5 +1,5 @@
 # MNXB11-project
-# About
+## About
 This is the repository for team 9's MNXB11 project.
 
 ## Directory structure
@@ -79,12 +79,56 @@ Note that the IPN is a measure used by the Federal reserve, which likely means t
 
 TODO: fix the edge case 2020 bug.
 
+## Data preprocessing
+
+Before extracting the data from the data sets it has to be preprocessed to remove any metadata and also be written in a form that can later be easily parsed. This data cleaning step is handled by the Python script `datacleaner.py` that can be found under `scripts/`. The script is supplied with a path to an (uncleaned) data CSV file, i.e. if ran from within the `scripts` directory one would run `datacleaner.py ../datasets/<SMHI data file>`. **Note:** the script requires the user to have a working python installation. Depending on your installation, the command above might not work and you can instead try invoking the python interpreter directly by running `python3 datacleaner.py ../datasets/<SMHI data file>`.
+
+The actual "cleaning" happens within the `main` function within the `datacleaner.py` script. In the SMHI data sets the first lines are devoted to metadata, for instance the name of the weather station and measurement height. Since this data is not used directly in the analysis code it is stripped away. For example, below are the first lines in the Falsterbo data set:
+
+```
+Stationsnamn;Stationsnummer;Stationsnät;Mäthöjd (meter över marken)
+Falsterbo;52230;SMHIs stationsnät;2.0
+
+Parameternamn;Beskrivning;Enhet
+Lufttemperatur;momentanvärde, 1 gång/tim;celsius
+
+Tidsperiod (fr.o.m);Tidsperiod (t.o.m);Höjd (meter över havet);Latitud (decimalgrader);Longitud (decimalgrader)
+1880-01-01 00:00:00;2023-10-01 06:20:09;1.541;55.3837;12.8167
+
+Datum;Tid (UTC);Lufttemperatur;Kvalitet;;Tidsutsnitt:
+1880-01-01;07:00:00;0.4;G;;Kvalitetskontrollerade historiska data (utom de senaste 3 mån)
+1880-01-01;13:00:00;1.0;G;;Tidsperiod (fr.o.m.) = 1880-01-01 00:00:00 (UTC)
+1880-01-01;20:00:00;1.7;G;;Tidsperiod (t.o.m.) = 2023-07-01 06:00:00 (UTC)
+...
+```
+
+In addition, there is some additional metadata to the right of the first few measurements. To strip away the first lines devoted solely to metadata we look for the line begining with "Datum" (Swedish word for date). This is is done in the following code block:
+
+```
+with open(filename, mode='r') as f:
+    print("Finding the first line containing 'datum'...")
+    for i, line in enumerate(f):
+        if "Datum" in line:
+            startline = i+1
+            break
+```
+
+First, we open the input file in read-only mode and assign it to the variable f. In Python it is then possible to loop over the individual lines within the file while also having a counter i keep track of which line it is currently on. This is contained in the third line above. It then checks for each line (interpreted as a single string) if it contains the substring "Datum", indicating that we are in the row above the measurements. If the substring is contained within that line we can therefore assign that line's index + 1 to a variable we call startline, which is simply the index of the line where the measurement data starts, and thereafter break the loop.
 
 
+Having found the line where the measurement data starts, we can now loop through the file once again but now with knowledge of where to start reading the data. This is done in the following block:
+```
+with open(filename, mode='r') as in_file, \
+    open(output_folder + f"/baredata_{os.path.basename(filename)}", "w+") as out_file:
+    print(f"Removing the first {startline} lines, selecting only the relevant columns and replacing ; with spaces.")
+    for i, line in enumerate(in_file):
+    if i>=startline:
+        date, time, temp, quality = line.rstrip('\n').split(";")[:4]
+        out_file.write(f"{date} {time} {temp} {quality}\n")
 
+    print(f"Cleanup was successful. Result can be found in {os.path.relpath(out_file.name)}.")
+    return 0
+```
+Once again, the input file is opened in read-only mode assigned this time to a variable called in_file. At the same time, we open (and create if it does not already exist) a new file (out_file) in read and write mode in the same directory as the input file and with the same filename as the input file but prepended with "baredata_". This will be our ouput file. 
 
-
-
-
-
-
+Looping over the lines in the input file as before we now check if the index is equal to or greater than the startline value we found earlier. If it is, we first strip the line (string) of any linebreaks ('\n'). In the example data above we can see that the data is separated using semi-colons. Hence, we then use the split function to turn it into a list containing the substrings separated by semi-colons (";"), i.e. the data. Lastly, to get rid of the extra metadata that appears in the first few lines we slice the list so as to only contain the first four columns corresponding to the date, time, temperature, and measurement quality. These are then assigned to corresponding variables. These values are then written to a single line in the output file in the same order as before but this time separated by spaces instead of semi-colons. After having looped through all the lines it returns 0 to indicate that the program executed succesfully. The above code blocks are themselves contained within a try block which in case of errors will divert to an except block which will print a message stating that the input file could not be read and then exit the program with exit code 1, indicating an error. Additionally, before ever calling the `main` function the script checks that the user actually inputted a file, and that they did not input a directory. If either of these fail it prints some usage instructions before exitting with error code 1.
